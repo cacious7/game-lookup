@@ -10,10 +10,14 @@ const Home = () => {
                 </Card.Header>
                 <Card.Body>
                     <Form>
-                        <Form.Group>
-                            <Form.Label htmlFor='name'>Name (contains)</Form.Label>
+                        <Form.Group controlId='name'>
+                            <Form.Label>Name (contains)</Form.Label>
                             <Form.Control type='text' name='name' placeholder='Text String'/>
-                        </Form.Group>
+                        </Form.Group>   
+                        <Form.Group controlId='min-score'>
+                            <Form.Label>Minimum Score</Form.Label>
+                            <Form.Control type='text' name='min-score' placeholder='1-10'/>
+                        </Form.Group>   
                     </Form>
                 </Card.Body>
             </Card>
