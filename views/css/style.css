@@ -11129,6 +11129,10 @@ button {
   min-height: 6.5rem;
 }
 
+.game .game-info p {
+  margin-bottom: 0;
+}
+
 .game .game-info .summary {
   white-space: nowrap;
   overflow: hidden;

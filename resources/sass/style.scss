@@ -141,12 +141,16 @@ button {
 /*Game Preview design*/
 $game-preview-height: 15rem; 
 
+@mixin split-game-preview {
+    max-height: ($game-preview-height/2) - $panel-padding;
+    min-height: ($game-preview-height/2) - $panel-padding;
+}
+
 .game {
     height: $game-preview-height;
 
     .game-img {
-        max-height: ($game-preview-height/2) - $panel-padding;
-        min-height: ($game-preview-height/2) - $panel-padding;
+        @include split-game-preview();
         overflow: hidden;
     
         img {
@@ -155,18 +159,17 @@ $game-preview-height: 15rem;
     }
 
     .game-info {
-        max-height: ($game-preview-height/2) - $panel-padding;
-        min-height: ($game-preview-height/2) - $panel-padding;
+        @include split-game-preview();
 
-       //div {
-        // max-height: ($game-preview-height/2) - $panel-padding;
-        // min-height: ($game-preview-height/2) - $panel-padding;
+        p {
+            margin-bottom: 0;
+        }
 
-            .summary {
-                white-space: nowrap;
-                overflow: hidden;
-                text-overflow: ellipsis;
-           // }
+        // show ellipses when summary text exceeds available space
+        .summary {
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
        }
     }
 }
