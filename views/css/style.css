@@ -11056,17 +11056,23 @@ label {
   color: #ffffff;
 }
 
-input {
-  background: #182c47;
+input,
+select {
+  background: #182c47 !important;
+  border-radius: 0 !important;
+  border-color: transparent !important;
+  color: white !important;
 }
 
 button {
-  background: #5692e8;
+  background: #5692e8 !important;
+  border-color: #5692e8 !important;
 }
 
 .panel {
   background: #0e1a2b;
-  padding: 2em;
+  padding: 1rem;
+  margin: 1rem 0 0;
 }
 
 /* Font-Sizes */
@@ -11076,9 +11082,51 @@ h2 {
   margin-bottom: 1.1rem;
 }
 
-/* Spacing */
+/* Sizing, Positioning & Spacing */
+
+.game-lookup-container {
+  flex-direction: column;
+}
 
 div[class^=card-] {
   padding: 0;
+}
+
+button {
+  min-width: 100%;
+  border-radius: 0 !important;
+}
+
+.filter-select {
+  display: flex;
+  flex-direction: row;
+}
+
+.filter-select button {
+  min-width: auto;
+  padding-top: 0;
+  border: transparent;
+}
+
+/*Game Preview design*/
+
+.game {
+  height: 15rem;
+}
+
+.game .game-img {
+  max-height: 6.5rem;
+  min-height: 6.5rem;
+  overflow: hidden;
+}
+
+.game .game-img img {
+  max-width: 100%;
+}
+
+.game .game-info div {
+  max-height: 6.5rem;
+  min-height: 6.5rem;
+  overflow: hidden;
 }
 

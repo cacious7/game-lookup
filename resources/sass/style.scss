@@ -62,12 +62,12 @@ $break-points: (
 
 /* Colors */
 
-// Body Background Colors
+// Body Colors
 $background1: #081221;
 $background2: #03080f;
 $background-gradient: linear-gradient(180deg, $background1, $background2) no-repeat;
 
-// Body background and text color
+// Body and text
 body {
     background: $background-gradient;
     color: #c1d1e8;
@@ -81,20 +81,27 @@ body {
     }
 }
 
-// Input Background
-input {
-    background: #182c47;
+// Input
+input, select {
+    background: #182c47 !important;
+    border-radius: 0 !important;
+    border-color: transparent !important;
+    color: white !important;
 }
 
-//Buttons Background
+//Buttons
 button {
-    background: #5692e8;
+    background: #5692e8 !important;
+    border-color: #5692e8 !important;
 }
 
-// Card / Panel background
+// Card / Panel 
+$panel-padding: 1rem;
+
 .panel {
     background: #0e1a2b;
-    padding: 2em;
+    padding: 1rem;
+    margin: 1rem 0 0;
 }
 
 /* Font-Sizes */
@@ -105,8 +112,57 @@ h2 {
     margin-bottom: 1.1rem;
 }
 
-/* Spacing */
-div[class^='card-']{
+/* Sizing, Positioning & Spacing */
+.game-lookup-container {
+    flex-direction: column;
+}
+
+div[class^='card-'] {
     padding: 0;
 }
+
+button {
+    min-width: 100%;
+    border-radius: 0 !important;
+}
+
+// Filter select and button  group
+.filter-select {
+    display: flex;
+    flex-direction: row;
+
+    button {
+        min-width: auto;
+        padding-top: 0;
+        border: transparent;
+    }
+}
+
+/*Game Preview design*/
+$game-preview-height: 15rem; 
+
+.game {
+    height: $game-preview-height;
+
+    .game-img {
+        max-height: ($game-preview-height/2) - $panel-padding;
+        min-height: ($game-preview-height/2) - $panel-padding;
+        overflow: hidden;
+    
+        img {
+            max-width: 100%;
+        }
+    }
+
+    .game-info {
+       div {
+        max-height: ($game-preview-height/2) - $panel-padding;
+        min-height: ($game-preview-height/2) - $panel-padding;
+        overflow: hidden;
+       }
+    }
+}
+
+
+
 
