@@ -11124,9 +11124,14 @@ button {
   max-width: 100%;
 }
 
-.game .game-info div {
+.game .game-info {
   max-height: 6.5rem;
   min-height: 6.5rem;
+}
+
+.game .game-info .summary {
+  white-space: nowrap;
   overflow: hidden;
+  text-overflow: ellipsis;
 }
 

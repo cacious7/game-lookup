@@ -17,16 +17,16 @@ const storeRouter = require( './api/routes/store' );
 const tagRouter = require( './api/routes/tag' );
 
 //DATABASE CONNECTION
-mongoose.connect(
-    process.env.DBCONNECTION, //db connect url - only this is mandatory and is hidden in the .env file. Dont upload the .env file to github
-    { useNewUrlParser: true, useUnifiedTopology: true, useCreateIndex: true }, //solve mongoose deprecation warnings
-    () => console.log( 'connection status in app.js = ' + mongoose.connection.readyState ) //on success function
-).catch( err => {
-    console.log( err );
-    app.use( ( req, res, next ) => {
-        res.status( 500 ).json( { error: err } )
-    });
-});
+// mongoose.connect(
+//     process.env.DBCONNECTION, //db connect url - only this is mandatory and is hidden in the .env file. Dont upload the .env file to github
+//     { useNewUrlParser: true, useUnifiedTopology: true, useCreateIndex: true }, //solve mongoose deprecation warnings
+//     () => console.log( 'connection status in app.js = ' + mongoose.connection.readyState ) //on success function
+// ).catch( err => {
+//     console.log( err );
+//     app.use( ( req, res, next ) => {
+//         res.status( 500 ).json( { error: err } )
+//     });
+// });
 
 //MIDDLEWARE
 //these arespecific functions that are run when specific routes are requested

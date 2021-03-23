@@ -57871,13 +57871,13 @@ var Game = function Game() {
     alt: "Game image"
   })), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", {
     className: "game-info"
-  }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", null, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("p", {
+  }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("p", {
     className: "Title"
   }, "Game-Title"), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("p", {
     className: "date"
   }, "Release date: ", /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("span", null, "DD/MM/YY")), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("p", {
     className: "summary"
-  }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("span", null, "[Summary]"), "Lorem ipsum andf tho the shit from the stick and stuff."))));
+  }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("span", null, "[Summary]"), "Lorem ipsum andf tho the shit from the stick and stuff.")));
 };
 
 /* harmony default export */ __webpack_exports__["default"] = (Game);
@@ -57976,8 +57976,8 @@ react_dom__WEBPACK_IMPORTED_MODULE_0___default.a.render( /*#__PURE__*/react__WEB
 /*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
 
-__webpack_require__(/*! E:\Gulait - git repository [product catalog]\Gulait Testing\game-lookup\resources\js\index.jsx */"./resources/js/index.jsx");
-module.exports = __webpack_require__(/*! E:\Gulait - git repository [product catalog]\Gulait Testing\game-lookup\resources\sass\style.scss */"./resources/sass/style.scss");
+__webpack_require__(/*! C:\Users\cacious\Documents\Cacious\game-lookup\resources\js\index.jsx */"./resources/js/index.jsx");
+module.exports = __webpack_require__(/*! C:\Users\cacious\Documents\Cacious\game-lookup\resources\sass\style.scss */"./resources/sass/style.scss");
 
 
 /***/ })

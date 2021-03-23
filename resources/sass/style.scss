@@ -155,10 +155,18 @@ $game-preview-height: 15rem;
     }
 
     .game-info {
-       div {
         max-height: ($game-preview-height/2) - $panel-padding;
         min-height: ($game-preview-height/2) - $panel-padding;
-        overflow: hidden;
+
+       //div {
+        // max-height: ($game-preview-height/2) - $panel-padding;
+        // min-height: ($game-preview-height/2) - $panel-padding;
+
+            .summary {
+                white-space: nowrap;
+                overflow: hidden;
+                text-overflow: ellipsis;
+           // }
        }
     }
 }
