@@ -161,6 +161,18 @@ function _objectWithoutPropertiesLoose(source, excluded) {
 
 /***/ }),
 
+/***/ "./node_modules/@babel/runtime/regenerator/index.js":
+/*!**********************************************************!*\
+  !*** ./node_modules/@babel/runtime/regenerator/index.js ***!
+  \**********************************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+module.exports = __webpack_require__(/*! regenerator-runtime */ "./node_modules/regenerator-runtime/runtime.js");
+
+
+/***/ }),
+
 /***/ "./node_modules/@fortawesome/fontawesome-svg-core/index.es.js":
 /*!********************************************************************!*\
   !*** ./node_modules/@fortawesome/fontawesome-svg-core/index.es.js ***!
@@ -51282,6 +51294,2097 @@ function useWaitForDOMRef(ref, onResolved) {
 
 /***/ }),
 
+/***/ "./node_modules/react-query/dist/react-query.mjs":
+/*!*******************************************************!*\
+  !*** ./node_modules/react-query/dist/react-query.mjs ***!
+  \*******************************************************/
+/*! exports provided: QueryStatus, ReactQueryCacheProvider, ReactQueryConfigProvider, deepIncludes, makeQueryCache, queryCache, queryCaches, setConsole, setFocusHandler, stableStringify, useInfiniteQuery, useIsFetching, useMutation, usePaginatedQuery, useQuery, useQueryCache */
+/***/ (function(__webpack_module__, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "QueryStatus", function() { return QueryStatus; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "ReactQueryCacheProvider", function() { return ReactQueryCacheProvider; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "ReactQueryConfigProvider", function() { return ReactQueryConfigProvider; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "deepIncludes", function() { return deepIncludes; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "makeQueryCache", function() { return makeQueryCache; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "queryCache", function() { return defaultQueryCache; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "queryCaches", function() { return queryCaches; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "setConsole", function() { return setConsole; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "setFocusHandler", function() { return setFocusHandler; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "stableStringify", function() { return stableStringify; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "useInfiniteQuery", function() { return useInfiniteQuery; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "useIsFetching", function() { return useIsFetching; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "useMutation", function() { return useMutation; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "usePaginatedQuery", function() { return usePaginatedQuery; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "useQuery", function() { return useQuery; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "useQueryCache", function() { return useQueryCache; });
+/* harmony import */ var react__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! react */ "./node_modules/react/index.js");
+
+
+function _extends() {
+  _extends = Object.assign || function (target) {
+    for (var i = 1; i < arguments.length; i++) {
+      var source = arguments[i];
+
+      for (var key in source) {
+        if (Object.prototype.hasOwnProperty.call(source, key)) {
+          target[key] = source[key];
+        }
+      }
+    }
+
+    return target;
+  };
+
+  return _extends.apply(this, arguments);
+}
+
+// The tuple variants are only to infer types in the public API
+var QueryStatus;
+
+(function (QueryStatus) {
+  QueryStatus["Idle"] = "idle";
+  QueryStatus["Loading"] = "loading";
+  QueryStatus["Error"] = "error";
+  QueryStatus["Success"] = "success";
+})(QueryStatus || (QueryStatus = {}));
+
+// UTILS
+var _uid = 0;
+var uid = function uid() {
+  return _uid++;
+};
+var cancelledError = {};
+var isServer = typeof window === 'undefined';
+function noop() {
+  return void 0;
+}
+var Console = console || {
+  error: noop,
+  warn: noop,
+  log: noop
+};
+function setConsole(c) {
+  Console = c;
+}
+function functionalUpdate(updater, input) {
+  return typeof updater === 'function' ? updater(input) : updater;
+}
+
+function stableStringifyReplacer(_key, value) {
+  if (typeof value === 'function') {
+    throw new Error('Cannot stringify non JSON value');
+  }
+
+  if (isObject(value)) {
+    return Object.keys(value).sort().reduce(function (result, key) {
+      result[key] = value[key];
+      return result;
+    }, {});
+  }
+
+  return value;
+}
+
+function stableStringify(value) {
+  return JSON.stringify(value, stableStringifyReplacer);
+}
+function deepIncludes(a, b) {
+  if (a === b) {
+    return true;
+  }
+
+  if (typeof a !== typeof b) {
+    return false;
+  }
+
+  if (typeof a === 'object') {
+    return !Object.keys(b).some(function (key) {
+      return !deepIncludes(a[key], b[key]);
+    });
+  }
+
+  return false;
+}
+function isDocumentVisible() {
+  // document global can be unavailable in react native
+  if (typeof document === 'undefined') {
+    return true;
+  }
+
+  return [undefined, 'visible', 'prerender'].includes(document.visibilityState);
+}
+function isOnline() {
+  return navigator.onLine === undefined || navigator.onLine;
+}
+function getQueryArgs(args) {
+  var queryKey;
+  var queryFn;
+  var config;
+  var options;
+
+  if (isObject(args[0])) {
+    queryKey = args[0].queryKey;
+    queryFn = args[0].queryFn;
+    config = args[0].config;
+    options = args[1];
+  } else if (isObject(args[1])) {
+    queryKey = args[0];
+    config = args[1];
+    options = args[2];
+  } else {
+    queryKey = args[0];
+    queryFn = args[1];
+    config = args[2];
+    options = args[3];
+  }
+
+  config = config ? _extends({
+    queryKey: queryKey
+  }, config) : {
+    queryKey: queryKey
+  };
+
+  if (queryFn) {
+    config = _extends({}, config, {
+      queryFn: queryFn
+    });
+  }
+
+  return [queryKey, config, options];
+}
+/**
+ * This function returns `a` if `b` is deeply equal.
+ * If not, it will replace any deeply equal children of `b` with those of `a`.
+ * This can be used for structural sharing between JSON values for example.
+ */
+
+function replaceEqualDeep(a, b) {
+  if (a === b) {
+    return a;
+  }
+
+  var array = Array.isArray(a) && Array.isArray(b);
+
+  if (array || isPlainObject(a) && isPlainObject(b)) {
+    var aSize = array ? a.length : Object.keys(a).length;
+    var bItems = array ? b : Object.keys(b);
+    var bSize = bItems.length;
+    var copy = array ? [] : {};
+    var equalItems = 0;
+
+    for (var i = 0; i < bSize; i++) {
+      var key = array ? i : bItems[i];
+      copy[key] = replaceEqualDeep(a[key], b[key]);
+
+      if (copy[key] === a[key]) {
+        equalItems++;
+      }
+    }
+
+    return aSize === bSize && equalItems === aSize ? a : copy;
+  }
+
+  return b;
+}
+function isObject(a) {
+  return a && typeof a === 'object' && !Array.isArray(a);
+} // Copied from: https://github.com/jonschlinkert/is-plain-object
+
+function isPlainObject(o) {
+  if (!hasObjectPrototype(o)) {
+    return false;
+  } // If has modified constructor
+
+
+  var ctor = o.constructor;
+
+  if (typeof ctor === 'undefined') {
+    return true;
+  } // If has modified prototype
+
+
+  var prot = ctor.prototype;
+
+  if (!hasObjectPrototype(prot)) {
+    return false;
+  } // If constructor does not have an Object-specific method
+
+
+  if (!prot.hasOwnProperty('isPrototypeOf')) {
+    return false;
+  } // Most likely a plain Object
+
+
+  return true;
+}
+
+function hasObjectPrototype(o) {
+  return Object.prototype.toString.call(o) === '[object Object]';
+}
+
+function getStatusProps(status) {
+  return {
+    status: status,
+    isLoading: status === QueryStatus.Loading,
+    isSuccess: status === QueryStatus.Success,
+    isError: status === QueryStatus.Error,
+    isIdle: status === QueryStatus.Idle
+  };
+}
+
+// CONFIG
+var defaultQueryKeySerializerFn = function defaultQueryKeySerializerFn(queryKey) {
+  try {
+    var arrayQueryKey = Array.isArray(queryKey) ? queryKey : [queryKey];
+    var queryHash = stableStringify(arrayQueryKey);
+    arrayQueryKey = JSON.parse(queryHash);
+    return [queryHash, arrayQueryKey];
+  } catch (_unused) {
+    throw new Error('A valid query key is required!');
+  }
+};
+var DEFAULT_CONFIG = {
+  queries: {
+    queryKeySerializerFn: defaultQueryKeySerializerFn,
+    enabled: true,
+    retry: 3,
+    retryDelay: function retryDelay(attemptIndex) {
+      return Math.min(1000 * Math.pow(2, attemptIndex), 30000);
+    },
+    staleTime: 0,
+    cacheTime: 5 * 60 * 1000,
+    refetchOnWindowFocus: true,
+    refetchOnMount: true
+  }
+};
+var defaultConfigRef = {
+  current: DEFAULT_CONFIG
+};
+
+var QueryObserver = /*#__PURE__*/function () {
+  function QueryObserver(config) {
+    this.config = config; // Bind exposed methods
+
+    this.clear = this.clear.bind(this);
+    this.refetch = this.refetch.bind(this);
+    this.fetchMore = this.fetchMore.bind(this); // Subscribe to query
+
+    this.updateQuery();
+  }
+
+  var _proto = QueryObserver.prototype;
+
+  _proto.subscribe = function subscribe(listener) {
+    this.started = true;
+    this.updateListener = listener;
+    this.optionalFetch();
+    this.updateRefetchInterval();
+    return this.unsubscribe.bind(this);
+  };
+
+  _proto.unsubscribe = function unsubscribe(preventGC) {
+    this.started = false;
+    this.updateListener = undefined;
+    this.clearRefetchInterval();
+    this.currentQuery.unsubscribeObserver(this, preventGC);
+  };
+
+  _proto.updateConfig = function updateConfig(config) {
+    var prevConfig = this.config;
+    this.config = config;
+    var updated = this.updateQuery(); // Take no further actions if the observer did not start yet
+
+    if (!this.started) {
+      return;
+    } // If we subscribed to a new query, optionally fetch and update refetch
+
+
+    if (updated) {
+      this.optionalFetch();
+      this.updateRefetchInterval();
+      return;
+    } // Optionally fetch if the query became enabled
+
+
+    if (config.enabled && !prevConfig.enabled) {
+      this.optionalFetch();
+    } // Update refetch interval if needed
+
+
+    if (config.enabled !== prevConfig.enabled || config.refetchInterval !== prevConfig.refetchInterval || config.refetchIntervalInBackground !== prevConfig.refetchIntervalInBackground) {
+      this.updateRefetchInterval();
+    }
+  };
+
+  _proto.getCurrentResult = function getCurrentResult() {
+    return this.currentResult;
+  };
+
+  _proto.clear = function clear() {
+    return this.currentQuery.clear();
+  };
+
+  _proto.refetch = function refetch() {
+    try {
+      var _this2 = this;
+
+      _this2.currentQuery.updateConfig(_this2.config);
+
+      return _this2.currentQuery.refetch();
+    } catch (e) {
+      return Promise.reject(e);
+    }
+  };
+
+  _proto.fetchMore = function fetchMore(fetchMoreVariable, options) {
+    try {
+      var _this4 = this;
+
+      _this4.currentQuery.updateConfig(_this4.config);
+
+      return _this4.currentQuery.fetchMore(fetchMoreVariable, options);
+    } catch (e) {
+      return Promise.reject(e);
+    }
+  };
+
+  _proto.fetch = function fetch() {
+    try {
+      var _this6 = this;
+
+      _this6.currentQuery.updateConfig(_this6.config);
+
+      return _this6.currentQuery.fetch().catch(function (error) {
+        Console.error(error);
+        return undefined;
+      });
+    } catch (e) {
+      return Promise.reject(e);
+    }
+  };
+
+  _proto.optionalFetch = function optionalFetch() {
+    if (this.config.enabled && // Don't auto refetch if disabled
+    !(this.config.suspense && this.currentResult.isFetched) && // Don't refetch if in suspense mode and the data is already fetched
+    this.currentResult.isStale && ( // Only refetch if stale
+    this.config.refetchOnMount || this.currentQuery.observers.length === 1)) {
+      this.fetch();
+    }
+  };
+
+  _proto.updateRefetchInterval = function updateRefetchInterval() {
+    var _this7 = this;
+
+    if (isServer) {
+      return;
+    }
+
+    this.clearRefetchInterval();
+
+    if (!this.config.enabled || !this.config.refetchInterval || this.config.refetchInterval < 0 || this.config.refetchInterval === Infinity) {
+      return;
+    }
+
+    this.refetchIntervalId = setInterval(function () {
+      if (_this7.config.refetchIntervalInBackground || isDocumentVisible()) {
+        _this7.fetch();
+      }
+    }, this.config.refetchInterval);
+  };
+
+  _proto.clearRefetchInterval = function clearRefetchInterval() {
+    if (this.refetchIntervalId) {
+      clearInterval(this.refetchIntervalId);
+      this.refetchIntervalId = undefined;
+    }
+  };
+
+  _proto.createResult = function createResult() {
+    var currentQuery = this.currentQuery,
+        previousResult = this.previousResult,
+        config = this.config;
+    var _currentQuery$state = currentQuery.state,
+        canFetchMore = _currentQuery$state.canFetchMore,
+        error = _currentQuery$state.error,
+        failureCount = _currentQuery$state.failureCount,
+        isFetched = _currentQuery$state.isFetched,
+        isFetching = _currentQuery$state.isFetching,
+        isFetchingMore = _currentQuery$state.isFetchingMore,
+        isLoading = _currentQuery$state.isLoading,
+        isStale = _currentQuery$state.isStale;
+    var _currentQuery$state2 = currentQuery.state,
+        data = _currentQuery$state2.data,
+        status = _currentQuery$state2.status,
+        updatedAt = _currentQuery$state2.updatedAt; // Keep previous data if needed
+
+    if (config.keepPreviousData && isLoading && (previousResult == null ? void 0 : previousResult.isSuccess)) {
+      data = previousResult.data;
+      updatedAt = previousResult.updatedAt;
+      status = previousResult.status;
+    }
+
+    return _extends({}, getStatusProps(status), {
+      canFetchMore: canFetchMore,
+      clear: this.clear,
+      data: data,
+      error: error,
+      failureCount: failureCount,
+      fetchMore: this.fetchMore,
+      isFetched: isFetched,
+      isFetching: isFetching,
+      isFetchingMore: isFetchingMore,
+      isStale: isStale,
+      query: currentQuery,
+      refetch: this.refetch,
+      updatedAt: updatedAt
+    });
+  };
+
+  _proto.updateQuery = function updateQuery() {
+    var prevQuery = this.currentQuery; // Remove the initial data when there is an existing query
+    // because this data should not be used for a new query
+
+    var config = prevQuery ? _extends({}, this.config, {
+      initialData: undefined
+    }) : this.config;
+    var newQuery = config.queryCache.buildQuery(config.queryKey, config);
+
+    if (newQuery === prevQuery) {
+      return false;
+    }
+
+    this.previousResult = this.currentResult;
+    prevQuery == null ? void 0 : prevQuery.unsubscribeObserver(this);
+    this.currentQuery = newQuery;
+    newQuery.subscribeObserver(this);
+    this.currentResult = this.createResult();
+    return true;
+  };
+
+  _proto.onQueryUpdate = function onQueryUpdate(_state, action) {
+    var _this$updateListener;
+
+    this.currentResult = this.createResult();
+    var _this$currentResult = this.currentResult,
+        data = _this$currentResult.data,
+        error = _this$currentResult.error,
+        isSuccess = _this$currentResult.isSuccess,
+        isError = _this$currentResult.isError;
+
+    if (action.type === 'Success' && isSuccess) {
+      var _this$config$onSucces, _this$config, _this$config$onSettle, _this$config2;
+
+      (_this$config$onSucces = (_this$config = this.config).onSuccess) == null ? void 0 : _this$config$onSucces.call(_this$config, data);
+      (_this$config$onSettle = (_this$config2 = this.config).onSettled) == null ? void 0 : _this$config$onSettle.call(_this$config2, data, null);
+      this.updateRefetchInterval();
+    } else if (action.type === 'Error' && isError) {
+      var _this$config$onError, _this$config3, _this$config$onSettle2, _this$config4;
+
+      (_this$config$onError = (_this$config3 = this.config).onError) == null ? void 0 : _this$config$onError.call(_this$config3, error);
+      (_this$config$onSettle2 = (_this$config4 = this.config).onSettled) == null ? void 0 : _this$config$onSettle2.call(_this$config4, undefined, error);
+      this.updateRefetchInterval();
+    }
+
+    (_this$updateListener = this.updateListener) == null ? void 0 : _this$updateListener.call(this, this.currentResult);
+  };
+
+  return QueryObserver;
+}();
+
+function _empty() {}
+
+function _awaitIgnored(value, direct) {
+  if (!direct) {
+    return value && value.then ? value.then(_empty) : Promise.resolve();
+  }
+}
+
+function _catch(body, recover) {
+  try {
+    var result = body();
+  } catch (e) {
+    return recover(e);
+  }
+
+  if (result && result.then) {
+    return result.then(void 0, recover);
+  }
+
+  return result;
+}
+
+function _continueIgnored(value) {
+  if (value && value.then) {
+    return value.then(_empty);
+  }
+}
+
+function _await(value, then, direct) {
+  if (direct) {
+    return then ? then(value) : value;
+  }
+
+  if (!value || !value.then) {
+    value = Promise.resolve(value);
+  }
+
+  return then ? value.then(then) : value;
+}
+
+function _invoke(body, then) {
+  var result = body();
+
+  if (result && result.then) {
+    return result.then(then);
+  }
+
+  return then(result);
+}
+
+function _async(f) {
+  return function () {
+    for (var args = [], i = 0; i < arguments.length; i++) {
+      args[i] = arguments[i];
+    }
+
+    try {
+      return Promise.resolve(f.apply(this, args));
+    } catch (e) {
+      return Promise.reject(e);
+    }
+  };
+}
+
+function _invokeIgnored(body) {
+  var result = body();
+
+  if (result && result.then) {
+    return result.then(_empty);
+  }
+}
+
+function _settle(pact, state, value) {
+  if (!pact.s) {
+    if (value instanceof _Pact) {
+      if (value.s) {
+        if (state & 1) {
+          state = value.s;
+        }
+
+        value = value.v;
+      } else {
+        value.o = _settle.bind(null, pact, state);
+        return;
+      }
+    }
+
+    if (value && value.then) {
+      value.then(_settle.bind(null, pact, state), _settle.bind(null, pact, 2));
+      return;
+    }
+
+    pact.s = state;
+    pact.v = value;
+    var observer = pact.o;
+
+    if (observer) {
+      observer(pact);
+    }
+  }
+}
+
+var _Pact = /*#__PURE__*/function () {
+  function _Pact() {}
+
+  _Pact.prototype.then = function (onFulfilled, onRejected) {
+    var result = new _Pact();
+    var state = this.s;
+
+    if (state) {
+      var callback = state & 1 ? onFulfilled : onRejected;
+
+      if (callback) {
+        try {
+          _settle(result, 1, callback(this.v));
+        } catch (e) {
+          _settle(result, 2, e);
+        }
+
+        return result;
+      } else {
+        return this;
+      }
+    }
+
+    this.o = function (_this) {
+      try {
+        var value = _this.v;
+
+        if (_this.s & 1) {
+          _settle(result, 1, onFulfilled ? onFulfilled(value) : value);
+        } else if (onRejected) {
+          _settle(result, 1, onRejected(value));
+        } else {
+          _settle(result, 2, value);
+        }
+      } catch (e) {
+        _settle(result, 2, e);
+      }
+    };
+
+    return result;
+  };
+
+  return _Pact;
+}();
+
+function _isSettledPact(thenable) {
+  return thenable instanceof _Pact && thenable.s & 1;
+}
+
+function _do(body, test) {
+  var awaitBody;
+
+  do {
+    var result = body();
+
+    if (result && result.then) {
+      if (_isSettledPact(result)) {
+        result = result.v;
+      } else {
+        awaitBody = true;
+        break;
+      }
+    }
+
+    var shouldContinue = test();
+
+    if (_isSettledPact(shouldContinue)) {
+      shouldContinue = shouldContinue.v;
+    }
+
+    if (!shouldContinue) {
+      return result;
+    }
+  } while (!shouldContinue.then);
+
+  var pact = new _Pact();
+
+  var reject = _settle.bind(null, pact, 2);
+
+  (awaitBody ? result.then(_resumeAfterBody) : shouldContinue.then(_resumeAfterTest)).then(void 0, reject);
+  return pact;
+
+  function _resumeAfterBody(value) {
+    result = value;
+
+    for (;;) {
+      shouldContinue = test();
+
+      if (_isSettledPact(shouldContinue)) {
+        shouldContinue = shouldContinue.v;
+      }
+
+      if (!shouldContinue) {
+        break;
+      }
+
+      if (shouldContinue.then) {
+        shouldContinue.then(_resumeAfterTest).then(void 0, reject);
+        return;
+      }
+
+      result = body();
+
+      if (result && result.then) {
+        if (_isSettledPact(result)) {
+          result = result.v;
+        } else {
+          result.then(_resumeAfterBody).then(void 0, reject);
+          return;
+        }
+      }
+    }
+
+    _settle(pact, 1, result);
+  }
+
+  function _resumeAfterTest(shouldContinue) {
+    if (shouldContinue) {
+      do {
+        result = body();
+
+        if (result && result.then) {
+          if (_isSettledPact(result)) {
+            result = result.v;
+          } else {
+            result.then(_resumeAfterBody).then(void 0, reject);
+            return;
+          }
+        }
+
+        shouldContinue = test();
+
+        if (_isSettledPact(shouldContinue)) {
+          shouldContinue = shouldContinue.v;
+        }
+
+        if (!shouldContinue) {
+          _settle(pact, 1, result);
+
+          return;
+        }
+      } while (!shouldContinue.then);
+
+      shouldContinue.then(_resumeAfterTest).then(void 0, reject);
+    } else {
+      _settle(pact, 1, result);
+    }
+  }
+}
+
+function _continue(value, then) {
+  return value && value.then ? value.then(then) : then(value);
+}
+
+function _rethrow(thrown, value) {
+  if (thrown) throw value;
+  return value;
+}
+
+function _finallyRethrows(body, finalizer) {
+  try {
+    var result = body();
+  } catch (e) {
+    return finalizer(true, e);
+  }
+
+  if (result && result.then) {
+    return result.then(finalizer.bind(null, false), finalizer.bind(null, true));
+  }
+
+  return finalizer(false, result);
+}
+
+var ActionType;
+
+(function (ActionType) {
+  ActionType["Failed"] = "Failed";
+  ActionType["MarkStale"] = "MarkStale";
+  ActionType["Fetch"] = "Fetch";
+  ActionType["Success"] = "Success";
+  ActionType["Error"] = "Error";
+  ActionType["SetState"] = "SetState";
+})(ActionType || (ActionType = {}));
+
+// CLASS
+var Query = /*#__PURE__*/function () {
+  function Query(init) {
+    this.config = init.config;
+    this.queryCache = init.queryCache;
+    this.queryKey = init.queryKey;
+    this.queryHash = init.queryHash;
+    this.notifyGlobalListeners = init.notifyGlobalListeners;
+    this.observers = [];
+    this.state = getDefaultState(init.config);
+
+    if (init.config.infinite) {
+      var infiniteConfig = init.config;
+      var infiniteData = this.state.data;
+
+      if (typeof infiniteData !== 'undefined') {
+        this.fetchMoreVariable = infiniteConfig.getFetchMore(infiniteData[infiniteData.length - 1], infiniteData);
+        this.state.canFetchMore = Boolean(this.fetchMoreVariable);
+      } // Here we seed the pageVariables for the query
+
+
+      if (!this.pageVariables) {
+        this.pageVariables = [[].concat(this.queryKey)];
+      }
+    } // If the query started with data, schedule
+    // a stale timeout
+
+
+    if (!isServer && this.state.data) {
+      this.scheduleStaleTimeout(); // Simulate a query healing process
+
+      this.heal(); // Schedule for garbage collection in case
+      // nothing subscribes to this query
+
+      this.scheduleGarbageCollection();
+    }
+  }
+
+  var _proto = Query.prototype;
+
+  _proto.updateConfig = function updateConfig(config) {
+    this.config = config;
+  };
+
+  _proto.dispatch = function dispatch(action) {
+    var _this = this;
+
+    this.state = queryReducer(this.state, action);
+    this.observers.forEach(function (d) {
+      return d.onQueryUpdate(_this.state, action);
+    });
+    this.notifyGlobalListeners(this);
+  };
+
+  _proto.scheduleStaleTimeout = function scheduleStaleTimeout() {
+    var _this2 = this;
+
+    if (isServer) {
+      return;
+    }
+
+    this.clearStaleTimeout();
+
+    if (this.state.isStale || this.config.staleTime === Infinity) {
+      return;
+    }
+
+    this.staleTimeout = setTimeout(function () {
+      _this2.invalidate();
+    }, this.config.staleTime);
+  };
+
+  _proto.invalidate = function invalidate() {
+    this.clearStaleTimeout();
+
+    if (this.state.isStale) {
+      return;
+    }
+
+    this.dispatch({
+      type: ActionType.MarkStale
+    });
+  };
+
+  _proto.scheduleGarbageCollection = function scheduleGarbageCollection() {
+    var _this3 = this;
+
+    if (isServer) {
+      return;
+    }
+
+    this.clearCacheTimeout();
+
+    if (this.config.cacheTime === Infinity) {
+      return;
+    }
+
+    this.cacheTimeout = setTimeout(function () {
+      _this3.clear();
+    }, typeof this.state.data === 'undefined' && this.state.status !== QueryStatus.Error ? 0 : this.config.cacheTime);
+  };
+
+  _proto.refetch = function refetch() {
+    try {
+      var _this5 = this;
+
+      return _continueIgnored(_catch(function () {
+        return _awaitIgnored(_this5.fetch());
+      }, function (error) {
+        Console.error(error);
+      }));
+    } catch (e) {
+      return Promise.reject(e);
+    }
+  };
+
+  _proto.heal = function heal() {
+    // Stop the query from being garbage collected
+    this.clearCacheTimeout(); // Mark the query as not cancelled
+
+    this.cancelled = null;
+  };
+
+  _proto.cancel = function cancel() {
+    this.cancelled = cancelledError;
+
+    if (this.cancelPromises) {
+      this.cancelPromises();
+    }
+
+    delete this.promise;
+  };
+
+  _proto.clearTimersObservers = function clearTimersObservers() {
+    this.observers.forEach(function (observer) {
+      observer.clearRefetchInterval();
+    });
+  };
+
+  _proto.clearStaleTimeout = function clearStaleTimeout() {
+    if (this.staleTimeout) {
+      clearTimeout(this.staleTimeout);
+      this.staleTimeout = undefined;
+    }
+  };
+
+  _proto.clearCacheTimeout = function clearCacheTimeout() {
+    if (this.cacheTimeout) {
+      clearTimeout(this.cacheTimeout);
+      this.cacheTimeout = undefined;
+    }
+  };
+
+  _proto.clearRetryTimeout = function clearRetryTimeout() {
+    if (this.retryTimeout) {
+      clearTimeout(this.retryTimeout);
+      this.retryTimeout = undefined;
+    }
+  };
+
+  _proto.setState = function setState(updater) {
+    this.dispatch({
+      type: ActionType.SetState,
+      updater: updater
+    });
+  };
+
+  _proto.setData = function setData(updater) {
+    var _this$config$isDataEq, _this$config;
+
+    var prevData = this.state.data; // Get the new data
+
+    var data = functionalUpdate(updater, prevData); // Structurally share data between prev and new data
+
+    data = replaceEqualDeep(prevData, data); // Use prev data if an isDataEqual function is defined and returns `true`
+
+    if ((_this$config$isDataEq = (_this$config = this.config).isDataEqual) == null ? void 0 : _this$config$isDataEq.call(_this$config, prevData, data)) {
+      data = prevData;
+    }
+
+    var isStale = this.config.staleTime === 0; // Set data and mark it as cached
+
+    this.dispatch({
+      type: ActionType.Success,
+      data: data,
+      isStale: isStale
+    });
+
+    if (!isStale) {
+      // Schedule a fresh invalidation!
+      this.scheduleStaleTimeout();
+    }
+  };
+
+  _proto.clear = function clear() {
+    this.clearStaleTimeout();
+    this.clearCacheTimeout();
+    this.clearRetryTimeout();
+    this.clearTimersObservers();
+    this.cancel();
+    delete this.queryCache.queries[this.queryHash];
+    this.notifyGlobalListeners(this);
+  };
+
+  _proto.isEnabled = function isEnabled() {
+    return this.observers.some(function (observer) {
+      return observer.config.enabled;
+    });
+  };
+
+  _proto.shouldRefetchOnWindowFocus = function shouldRefetchOnWindowFocus() {
+    return this.isEnabled() && this.state.isStale && this.observers.some(function (observer) {
+      return observer.config.refetchOnWindowFocus;
+    });
+  };
+
+  _proto.subscribe = function subscribe(listener) {
+    var observer = new QueryObserver(_extends({
+      queryCache: this.queryCache,
+      queryKey: this.queryKey
+    }, this.config));
+    observer.subscribe(listener);
+    return observer;
+  };
+
+  _proto.subscribeObserver = function subscribeObserver(observer) {
+    this.observers.push(observer);
+    this.heal();
+  };
+
+  _proto.unsubscribeObserver = function unsubscribeObserver(observer, preventGC) {
+    this.observers = this.observers.filter(function (x) {
+      return x !== observer;
+    });
+
+    if (!this.observers.length) {
+      this.cancel();
+
+      if (!preventGC) {
+        // Schedule garbage collection
+        this.scheduleGarbageCollection();
+      }
+    }
+  } // Set up the core fetcher function
+  ;
+
+  _proto.tryFetchData = function tryFetchData(fn, args) {
+    try {
+      var _this7 = this;
+
+      return _catch(function () {
+        // Perform the query
+        var filter = _this7.config.queryFnParamsFilter;
+        var params = filter ? filter(args) : args; // Perform the query
+
+        var promiseOrValue = fn.apply(void 0, params);
+
+        _this7.cancelPromises = function () {
+          var _ref;
+
+          return (_ref = promiseOrValue) == null ? void 0 : _ref.cancel == null ? void 0 : _ref.cancel();
+        };
+
+        return _await(promiseOrValue, function (data) {
+          delete _this7.shouldContinueRetryOnFocus;
+          delete _this7.cancelPromises;
+          if (_this7.cancelled) throw _this7.cancelled;
+          return data;
+        });
+      }, function (error) {
+        var _exit = false;
+        delete _this7.cancelPromises;
+        if (_this7.cancelled) throw _this7.cancelled; // Do we need to retry the request?
+
+        return _invoke(function () {
+          if (_this7.config.retry === true || _this7.state.failureCount < _this7.config.retry || typeof _this7.config.retry === 'function' && _this7.config.retry(_this7.state.failureCount, error)) {
+            // If we retry, increase the failureCount
+            _this7.dispatch({
+              type: ActionType.Failed
+            }); // Only retry if the document is visible
+
+
+            if (!isDocumentVisible()) {
+              // set this flag to continue retries on focus
+              _this7.shouldContinueRetryOnFocus = true; // Resolve a
+
+              _exit = true;
+              return new Promise(noop);
+            }
+
+            delete _this7.shouldContinueRetryOnFocus; // Determine the retryDelay
+
+            var delay = functionalUpdate(_this7.config.retryDelay, _this7.state.failureCount); // Return a new promise with the retry
+
+            _exit = true;
+            return _await(new Promise(function (resolve, reject) {
+              // Keep track of the retry timeout
+              _this7.retryTimeout = setTimeout(_async(function () {
+                return _this7.cancelled ? reject(_this7.cancelled) : _catch(function () {
+                  return _await(_this7.tryFetchData(fn, args), function (data) {
+                    if (_this7.cancelled) return reject(_this7.cancelled);
+                    resolve(data);
+                  });
+                }, function (error) {
+                  if (_this7.cancelled) return reject(_this7.cancelled);
+                  reject(error);
+                });
+              }), delay);
+            }));
+          }
+        }, function (_result) {
+          if (_exit) return _result;
+          throw error;
+        });
+      });
+    } catch (e) {
+      return Promise.reject(e);
+    }
+  };
+
+  _proto.fetch = function fetch(options) {
+    try {
+      var _this9 = this;
+
+      var queryFn = _this9.config.queryFn;
+
+      if (!queryFn) {
+        return;
+      } // If we are already fetching, return current promise
+
+
+      if (_this9.promise) {
+        return _this9.promise;
+      }
+
+      if (_this9.config.infinite) {
+        var infiniteConfig = _this9.config;
+        var infiniteData = _this9.state.data;
+        var fetchMore = options == null ? void 0 : options.fetchMore;
+        var originalQueryFn = queryFn;
+        queryFn = _async(function () {
+          var _interrupt = false;
+          var data = [];
+          var pageVariables = _this9.pageVariables ? [].concat(_this9.pageVariables) : [];
+          var rebuiltPageVariables = [];
+          return _continue(_do(function () {
+            var args = pageVariables.shift();
+            return _invokeIgnored(function () {
+              if (!data.length) {
+                var _push3 = data.push;
+                // the first page query doesn't need to be rebuilt
+                return _await(originalQueryFn.apply(void 0, args), function (_originalQueryFn) {
+                  _push3.call(data, _originalQueryFn);
+
+                  rebuiltPageVariables.push(args);
+                });
+              } else {
+                // get an up-to-date cursor based on the previous data set
+                var nextCursor = infiniteConfig.getFetchMore(data[data.length - 1], data); // break early if there's no next cursor
+                // otherwise we'll start from the beginning
+                // which will cause unwanted duplication
+
+                if (!nextCursor) {
+                  _interrupt = true;
+                  return;
+                }
+
+                var pageArgs = [].concat(args.slice(0, -1), [nextCursor]);
+                var _push4 = data.push;
+                return _await(originalQueryFn.apply(void 0, pageArgs), function (_originalQueryFn2) {
+                  _push4.call(data, _originalQueryFn2);
+
+                  rebuiltPageVariables.push(pageArgs);
+                });
+              }
+            });
+          }, function () {
+            return !_interrupt && !!pageVariables.length;
+          }), function () {
+            _this9.fetchMoreVariable = infiniteConfig.getFetchMore(data[data.length - 1], data);
+            _this9.state.canFetchMore = Boolean(_this9.fetchMoreVariable);
+            _this9.pageVariables = rebuiltPageVariables;
+            return data;
+          });
+        });
+
+        if (fetchMore) {
+          queryFn = _async(function () {
+            for (var _len = arguments.length, args = new Array(_len), _key = 0; _key < _len; _key++) {
+              args[_key] = arguments[_key];
+            }
+
+            return _finallyRethrows(function () {
+              var fetchMoreVariable = fetchMore.fetchMoreVariable,
+                  previous = fetchMore.previous;
+
+              _this9.setState(function (old) {
+                return _extends({}, old, {
+                  isFetchingMore: previous ? 'previous' : 'next'
+                });
+              });
+
+              var newArgs = [].concat(args, [fetchMoreVariable]);
+
+              if (_this9.pageVariables) {
+                _this9.pageVariables[previous ? 'unshift' : 'push'](newArgs);
+              } else {
+                _this9.pageVariables = [newArgs];
+              }
+
+              return _await(originalQueryFn.apply(void 0, newArgs), function (newData) {
+                var data;
+
+                if (!infiniteData) {
+                  data = [newData];
+                } else if (previous) {
+                  data = [newData].concat(infiniteData);
+                } else {
+                  data = [].concat(infiniteData, [newData]);
+                }
+
+                _this9.fetchMoreVariable = infiniteConfig.getFetchMore(newData, data);
+                _this9.state.canFetchMore = Boolean(_this9.fetchMoreVariable);
+                return data;
+              });
+            }, function (_wasThrown, _result3) {
+              _this9.setState(function (old) {
+                return _extends({}, old, {
+                  isFetchingMore: false
+                });
+              });
+
+              return _rethrow(_wasThrown, _result3);
+            });
+          });
+        }
+      }
+
+      _this9.promise = _async(function () {
+        // If there are any retries pending for this query, kill them
+        _this9.cancelled = null;
+        return _catch(function () {
+          // Set to fetching state if not already in it
+          if (!_this9.state.isFetching) {
+            _this9.dispatch({
+              type: ActionType.Fetch
+            });
+          } // Try to get the data
+
+
+          return _await(_this9.tryFetchData(queryFn, _this9.queryKey), function (data) {
+            _this9.setData(data);
+
+            delete _this9.promise;
+            return data;
+          });
+        }, function (error) {
+          _this9.dispatch({
+            type: ActionType.Error,
+            cancelled: error === _this9.cancelled,
+            error: error
+          });
+
+          delete _this9.promise;
+
+          if (error !== _this9.cancelled) {
+            throw error;
+          }
+        });
+      })();
+      return _this9.promise;
+    } catch (e) {
+      return Promise.reject(e);
+    }
+  };
+
+  _proto.fetchMore = function fetchMore(fetchMoreVariable, options) {
+    return this.fetch({
+      fetchMore: {
+        fetchMoreVariable: fetchMoreVariable != null ? fetchMoreVariable : this.fetchMoreVariable,
+        previous: (options == null ? void 0 : options.previous) || false
+      }
+    });
+  };
+
+  return Query;
+}();
+
+function getDefaultState(config) {
+  var _config$initialStale;
+
+  var initialData = typeof config.initialData === 'function' ? config.initialData() : config.initialData;
+  var hasInitialData = typeof initialData !== 'undefined';
+  var isStale = !config.enabled || (typeof config.initialStale === 'function' ? config.initialStale() : (_config$initialStale = config.initialStale) != null ? _config$initialStale : !hasInitialData);
+  var initialStatus = hasInitialData ? QueryStatus.Success : config.enabled ? QueryStatus.Loading : QueryStatus.Idle;
+  return _extends({}, getStatusProps(initialStatus), {
+    error: null,
+    isFetched: false,
+    isFetching: initialStatus === QueryStatus.Loading,
+    isFetchingMore: false,
+    failureCount: 0,
+    isStale: isStale,
+    data: initialData,
+    updatedAt: hasInitialData ? Date.now() : 0
+  });
+}
+
+function queryReducer(state, action) {
+  switch (action.type) {
+    case ActionType.Failed:
+      return _extends({}, state, {
+        failureCount: state.failureCount + 1
+      });
+
+    case ActionType.MarkStale:
+      return _extends({}, state, {
+        isStale: true
+      });
+
+    case ActionType.Fetch:
+      var status = typeof state.data !== 'undefined' ? QueryStatus.Success : QueryStatus.Loading;
+      return _extends({}, state, getStatusProps(status), {
+        isFetching: true,
+        failureCount: 0
+      });
+
+    case ActionType.Success:
+      return _extends({}, state, getStatusProps(QueryStatus.Success), {
+        data: action.data,
+        error: null,
+        isStale: action.isStale,
+        isFetched: true,
+        isFetching: false,
+        updatedAt: Date.now(),
+        failureCount: 0
+      });
+
+    case ActionType.Error:
+      return _extends({}, state, {
+        failureCount: state.failureCount + 1,
+        isFetched: true,
+        isFetching: false,
+        isStale: true
+      }, !action.cancelled && _extends({}, getStatusProps(QueryStatus.Error), {
+        error: action.error,
+        throwInErrorBoundary: true
+      }));
+
+    case ActionType.SetState:
+      return functionalUpdate(action.updater, state);
+
+    default:
+      return state;
+  }
+}
+
+// CLASS
+function _empty$1() {}
+
+function _awaitIgnored$1(value, direct) {
+  if (!direct) {
+    return value && value.then ? value.then(_empty$1) : Promise.resolve();
+  }
+}
+
+function _catch$1(body, recover) {
+  try {
+    var result = body();
+  } catch (e) {
+    return recover(e);
+  }
+
+  if (result && result.then) {
+    return result.then(void 0, recover);
+  }
+
+  return result;
+}
+
+function _invoke$1(body, then) {
+  var result = body();
+
+  if (result && result.then) {
+    return result.then(then);
+  }
+
+  return then(result);
+}
+
+var QueryCache = /*#__PURE__*/function () {
+  function QueryCache(config) {
+    this.config = config || {}; // A frozen cache does not add new queries to the cache
+
+    this.globalListeners = [];
+    this.configRef = this.config.defaultConfig ? {
+      current: {
+        shared: _extends({}, defaultConfigRef.current.shared, this.config.defaultConfig.shared),
+        queries: _extends({}, defaultConfigRef.current.queries, this.config.defaultConfig.queries),
+        mutations: _extends({}, defaultConfigRef.current.mutations, this.config.defaultConfig.mutations)
+      }
+    } : defaultConfigRef;
+    this.queries = {};
+    this.isFetching = 0;
+  }
+
+  var _proto = QueryCache.prototype;
+
+  _proto.notifyGlobalListeners = function notifyGlobalListeners(query) {
+    var _this = this;
+
+    this.isFetching = Object.values(this.queries).reduce(function (acc, query) {
+      return query.state.isFetching ? acc + 1 : acc;
+    }, 0);
+    this.globalListeners.forEach(function (d) {
+      return d(_this, query);
+    });
+  };
+
+  _proto.getDefaultConfig = function getDefaultConfig() {
+    return this.configRef.current;
+  };
+
+  _proto.getDefaultedConfig = function getDefaultedConfig(config) {
+    return _extends({}, this.configRef.current.shared, this.configRef.current.queries, {
+      queryCache: this
+    }, config);
+  };
+
+  _proto.subscribe = function subscribe(listener) {
+    var _this2 = this;
+
+    this.globalListeners.push(listener);
+    return function () {
+      _this2.globalListeners.splice(_this2.globalListeners.indexOf(listener), 1);
+    };
+  };
+
+  _proto.clear = function clear(options) {
+    Object.values(this.queries).forEach(function (query) {
+      return query.clear();
+    });
+    this.queries = {};
+
+    if (options == null ? void 0 : options.notify) {
+      this.notifyGlobalListeners();
+    }
+  };
+
+  _proto.getQueries = function getQueries(predicate, options) {
+    if (predicate === true) {
+      return Object.values(this.queries);
+    }
+
+    var predicateFn;
+
+    if (typeof predicate === 'function') {
+      predicateFn = predicate;
+    } else {
+      var _ref = this.configRef.current.queries.queryKeySerializerFn(predicate),
+          queryHash = _ref[0],
+          _queryKey = _ref[1];
+
+      predicateFn = function predicateFn(d) {
+        return (options == null ? void 0 : options.exact) ? d.queryHash === queryHash : deepIncludes(d.queryKey, _queryKey);
+      };
+    }
+
+    return Object.values(this.queries).filter(predicateFn);
+  };
+
+  _proto.getQuery = function getQuery(predicate) {
+    return this.getQueries(predicate, {
+      exact: true
+    })[0];
+  };
+
+  _proto.getQueryData = function getQueryData(predicate) {
+    var _this$getQuery;
+
+    return (_this$getQuery = this.getQuery(predicate)) == null ? void 0 : _this$getQuery.state.data;
+  };
+
+  _proto.removeQueries = function removeQueries(predicate, options) {
+    this.getQueries(predicate, options).forEach(function (query) {
+      return query.clear();
+    });
+  };
+
+  _proto.cancelQueries = function cancelQueries(predicate, options) {
+    this.getQueries(predicate, options).forEach(function (query) {
+      return query.cancel();
+    });
+  };
+
+  _proto.invalidateQueries = function invalidateQueries(predicate, options) {
+    try {
+      var _this4 = this;
+
+      var _ref2 = options || {},
+          _ref2$refetchActive = _ref2.refetchActive,
+          refetchActive = _ref2$refetchActive === void 0 ? true : _ref2$refetchActive,
+          _ref2$refetchInactive = _ref2.refetchInactive,
+          refetchInactive = _ref2$refetchInactive === void 0 ? false : _ref2$refetchInactive,
+          throwOnError = _ref2.throwOnError;
+
+      return _catch$1(function () {
+        return _awaitIgnored$1(Promise.all(_this4.getQueries(predicate, options).map(function (query) {
+          if (query.observers.length) {
+            if (refetchActive && query.isEnabled()) {
+              return query.fetch();
+            }
+          } else {
+            if (refetchInactive) {
+              return query.fetch();
+            }
+          }
+
+          return query.invalidate();
+        })));
+      }, function (err) {
+        if (throwOnError) {
+          throw err;
+        }
+      });
+    } catch (e) {
+      return Promise.reject(e);
+    }
+  };
+
+  _proto.resetErrorBoundaries = function resetErrorBoundaries() {
+    this.getQueries(true).forEach(function (query) {
+      query.state.throwInErrorBoundary = false;
+    });
+  };
+
+  _proto.buildQuery = function buildQuery(userQueryKey, queryConfig) {
+    var _this5 = this;
+
+    var config = this.getDefaultedConfig(queryConfig);
+
+    var _ref3 = config.queryKeySerializerFn(userQueryKey),
+        queryHash = _ref3[0],
+        queryKey = _ref3[1];
+
+    var query;
+
+    if (this.queries[queryHash]) {
+      query = this.queries[queryHash];
+      query.updateConfig(config);
+    }
+
+    if (!query) {
+      query = new Query({
+        queryCache: this,
+        queryKey: queryKey,
+        queryHash: queryHash,
+        config: config,
+        notifyGlobalListeners: function notifyGlobalListeners(query) {
+          _this5.notifyGlobalListeners(query);
+        }
+      });
+
+      if (!this.config.frozen) {
+        this.queries[queryHash] = query;
+
+        if (isServer) {
+          this.notifyGlobalListeners();
+        } else {
+          // Here, we setTimeout so as to not trigger
+          // any setState's in parent components in the
+          // middle of the render phase.
+          setTimeout(function () {
+            _this5.notifyGlobalListeners();
+          });
+        }
+      }
+    }
+
+    return query;
+  } // Parameter syntax with optional prefetch options
+  ;
+
+  // Implementation
+  _proto.prefetchQuery = function prefetchQuery() {
+    try {
+      var _this7 = this;
+
+      for (var _len = arguments.length, args = new Array(_len), _key = 0; _key < _len; _key++) {
+        args[_key] = arguments[_key];
+      }
+
+      if (isObject(args[1]) && (args[1].hasOwnProperty('throwOnError') || args[1].hasOwnProperty('force'))) {
+        args[3] = args[1];
+        args[1] = undefined;
+        args[2] = undefined;
+      }
+
+      var _getQueryArgs = getQueryArgs(args),
+          _queryKey2 = _getQueryArgs[0],
+          _config = _getQueryArgs[1],
+          _options = _getQueryArgs[2]; // https://github.com/tannerlinsley/react-query/issues/652
+
+
+      var configWithoutRetry = _extends({
+        retry: false
+      }, _config);
+
+      return _catch$1(function () {
+        var query = _this7.buildQuery(_queryKey2, configWithoutRetry);
+
+        return _invoke$1(function () {
+          if ((_options == null ? void 0 : _options.force) || query.state.isStale) {
+            return _awaitIgnored$1(query.fetch());
+          }
+        }, function () {
+          return query.state.data;
+        });
+      }, function (err) {
+        if (_options == null ? void 0 : _options.throwOnError) {
+          throw err;
+        }
+
+        Console.error(err);
+      });
+    } catch (e) {
+      return Promise.reject(e);
+    }
+  };
+
+  _proto.setQueryData = function setQueryData(queryKey, updater, config) {
+    var query = this.getQuery(queryKey);
+
+    if (!query) {
+      query = this.buildQuery(queryKey, config);
+    }
+
+    query.setData(updater);
+  };
+
+  return QueryCache;
+}();
+var defaultQueryCache = makeQueryCache({
+  frozen: isServer
+});
+var queryCaches = [defaultQueryCache];
+function makeQueryCache(config) {
+  return new QueryCache(config);
+}
+
+var visibilityChangeEvent = 'visibilitychange';
+var focusEvent = 'focus';
+
+var onWindowFocus = function onWindowFocus() {
+  if (isDocumentVisible() && isOnline()) {
+    queryCaches.forEach(function (queryCache) {
+      return queryCache.invalidateQueries(function (query) {
+        if (!query.shouldRefetchOnWindowFocus()) {
+          return false;
+        }
+
+        if (query.shouldContinueRetryOnFocus) {
+          // delete promise, so refetching will create new one
+          delete query.promise;
+        }
+
+        return true;
+      }).catch(Console.error);
+    });
+  }
+};
+
+var removePreviousHandler;
+function setFocusHandler(callback) {
+  // Unsub the old watcher
+  if (removePreviousHandler) {
+    removePreviousHandler();
+  } // Sub the new watcher
+
+
+  removePreviousHandler = callback(onWindowFocus);
+}
+setFocusHandler(function (handleFocus) {
+  var _window;
+
+  // Listen to visibillitychange and focus
+  if (!isServer && ((_window = window) == null ? void 0 : _window.addEventListener)) {
+    window.addEventListener(visibilityChangeEvent, handleFocus, false);
+    window.addEventListener(focusEvent, handleFocus, false);
+    return function () {
+      // Be sure to unsubscribe if a new handler is set
+      window.removeEventListener(visibilityChangeEvent, handleFocus);
+      window.removeEventListener(focusEvent, handleFocus);
+    };
+  }
+
+  return;
+});
+
+var queryCacheContext = react__WEBPACK_IMPORTED_MODULE_0__.createContext(defaultQueryCache);
+var useQueryCache = function useQueryCache() {
+  return react__WEBPACK_IMPORTED_MODULE_0__.useContext(queryCacheContext);
+};
+var ReactQueryCacheProvider = function ReactQueryCacheProvider(_ref) {
+  var queryCache = _ref.queryCache,
+      children = _ref.children;
+  var resolvedQueryCache = react__WEBPACK_IMPORTED_MODULE_0__.useMemo(function () {
+    return queryCache || makeQueryCache();
+  }, [queryCache]);
+  react__WEBPACK_IMPORTED_MODULE_0__.useEffect(function () {
+    queryCaches.push(resolvedQueryCache);
+    return function () {
+      // remove the cache from the active list
+      var i = queryCaches.indexOf(resolvedQueryCache);
+
+      if (i > -1) {
+        queryCaches.splice(i, 1);
+      } // if the resolvedQueryCache was created by us, we need to tear it down
+
+
+      if (queryCache == null) {
+        resolvedQueryCache.clear({
+          notify: false
+        });
+      }
+    };
+  }, [resolvedQueryCache, queryCache]);
+  return /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0__.createElement(queryCacheContext.Provider, {
+    value: resolvedQueryCache
+  }, children);
+};
+
+var configContext = react__WEBPACK_IMPORTED_MODULE_0__.createContext(undefined);
+function useConfigContext() {
+  var queryCache = useQueryCache();
+  return react__WEBPACK_IMPORTED_MODULE_0__.useContext(configContext) || queryCache.getDefaultConfig() || defaultConfigRef.current;
+}
+var ReactQueryConfigProvider = function ReactQueryConfigProvider(_ref) {
+  var config = _ref.config,
+      children = _ref.children;
+  var configContextValueOrDefault = useConfigContext();
+  var configContextValue = react__WEBPACK_IMPORTED_MODULE_0__.useContext(configContext);
+  var newConfig = react__WEBPACK_IMPORTED_MODULE_0__.useMemo(function () {
+    var _config$shared = config.shared,
+        shared = _config$shared === void 0 ? {} : _config$shared,
+        _config$queries = config.queries,
+        queries = _config$queries === void 0 ? {} : _config$queries,
+        _config$mutations = config.mutations,
+        mutations = _config$mutations === void 0 ? {} : _config$mutations;
+    var _configContextValueOr = configContextValueOrDefault.shared,
+        contextShared = _configContextValueOr === void 0 ? {} : _configContextValueOr,
+        _configContextValueOr2 = configContextValueOrDefault.queries,
+        contextQueries = _configContextValueOr2 === void 0 ? {} : _configContextValueOr2,
+        _configContextValueOr3 = configContextValueOrDefault.mutations,
+        contextMutations = _configContextValueOr3 === void 0 ? {} : _configContextValueOr3;
+    return {
+      shared: _extends({}, contextShared, shared),
+      queries: _extends({}, contextQueries, queries),
+      mutations: _extends({}, contextMutations, mutations)
+    };
+  }, [config, configContextValueOrDefault]);
+  react__WEBPACK_IMPORTED_MODULE_0__.useEffect(function () {
+    // restore previous config on unmount
+    return function () {
+      defaultConfigRef.current = _extends({}, configContextValueOrDefault || DEFAULT_CONFIG);
+    };
+  }, [configContextValueOrDefault]); // If this is the outermost provider, overwrite the shared default config
+
+  if (!configContextValue) {
+    defaultConfigRef.current = newConfig;
+  }
+
+  return /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0__.createElement(configContext.Provider, {
+    value: newConfig
+  }, children);
+};
+
+function useGetLatest(obj) {
+  var ref = react__WEBPACK_IMPORTED_MODULE_0__.useRef(obj);
+  ref.current = obj;
+  return react__WEBPACK_IMPORTED_MODULE_0__.useCallback(function () {
+    return ref.current;
+  }, []);
+}
+function useMountedCallback(callback) {
+  var mounted = react__WEBPACK_IMPORTED_MODULE_0__.useRef(false);
+  react__WEBPACK_IMPORTED_MODULE_0__[isServer ? 'useEffect' : 'useLayoutEffect'](function () {
+    mounted.current = true;
+    return function () {
+      mounted.current = false;
+    };
+  }, []);
+  return react__WEBPACK_IMPORTED_MODULE_0__.useCallback(function () {
+    return mounted.current ? callback.apply(void 0, arguments) : void 0;
+  }, [callback]);
+}
+function useRerenderer() {
+  var rerender = useMountedCallback(react__WEBPACK_IMPORTED_MODULE_0__.useState()[1]);
+  return react__WEBPACK_IMPORTED_MODULE_0__.useCallback(function () {
+    return rerender({});
+  }, [rerender]);
+}
+
+function useIsFetching() {
+  var queryCache = useQueryCache();
+  var rerender = useRerenderer();
+  var isFetching = queryCache.isFetching;
+  var getIsFetching = useGetLatest(isFetching);
+  react__WEBPACK_IMPORTED_MODULE_0__.useEffect(function () {
+    return queryCache.subscribe(function (newCache) {
+      if (getIsFetching() !== newCache.isFetching) {
+        rerender();
+      }
+    });
+  }, [getIsFetching, queryCache, rerender]);
+  return isFetching;
+}
+
+function _await$1(value, then, direct) {
+  if (direct) {
+    return then ? then(value) : value;
+  }
+
+  if (!value || !value.then) {
+    value = Promise.resolve(value);
+  }
+
+  return then ? value.then(then) : value;
+}
+
+var ActionType$1;
+
+function _catch$2(body, recover) {
+  try {
+    var result = body();
+  } catch (e) {
+    return recover(e);
+  }
+
+  if (result && result.then) {
+    return result.then(void 0, recover);
+  }
+
+  return result;
+}
+
+function _async$1(f) {
+  return function () {
+    for (var args = [], i = 0; i < arguments.length; i++) {
+      args[i] = arguments[i];
+    }
+
+    try {
+      return Promise.resolve(f.apply(this, args));
+    } catch (e) {
+      return Promise.reject(e);
+    }
+  };
+}
+
+(function (ActionType) {
+  ActionType["Reset"] = "Reset";
+  ActionType["Loading"] = "Loading";
+  ActionType["Resolve"] = "Resolve";
+  ActionType["Reject"] = "Reject";
+})(ActionType$1 || (ActionType$1 = {}));
+
+// HOOK
+var getDefaultState$1 = function getDefaultState() {
+  return _extends({}, getStatusProps(QueryStatus.Idle), {
+    data: undefined,
+    error: null
+  });
+};
+
+function mutationReducer(state, action) {
+  switch (action.type) {
+    case ActionType$1.Reset:
+      return getDefaultState$1();
+
+    case ActionType$1.Loading:
+      return _extends({}, getStatusProps(QueryStatus.Loading), {
+        data: undefined,
+        error: null
+      });
+
+    case ActionType$1.Resolve:
+      return _extends({}, getStatusProps(QueryStatus.Success), {
+        data: action.data,
+        error: null
+      });
+
+    case ActionType$1.Reject:
+      return _extends({}, getStatusProps(QueryStatus.Error), {
+        data: undefined,
+        error: action.error
+      });
+
+    default:
+      return state;
+  }
+}
+
+function useMutation(mutationFn, config) {
+  if (config === void 0) {
+    config = {};
+  }
+
+  var _React$useReducer = react__WEBPACK_IMPORTED_MODULE_0__.useReducer(mutationReducer, null, getDefaultState$1),
+      state = _React$useReducer[0],
+      unsafeDispatch = _React$useReducer[1];
+
+  var dispatch = useMountedCallback(unsafeDispatch);
+  var getMutationFn = useGetLatest(mutationFn);
+  var contextConfig = useConfigContext();
+  var getConfig = useGetLatest(_extends({}, contextConfig.shared, contextConfig.mutations, config));
+  var latestMutationRef = react__WEBPACK_IMPORTED_MODULE_0__.useRef();
+  var mutate = react__WEBPACK_IMPORTED_MODULE_0__.useCallback(_async$1(function (variables, mutateConfig) {
+    if (mutateConfig === void 0) {
+      mutateConfig = {};
+    }
+
+    var config = getConfig();
+    var mutationId = uid();
+    latestMutationRef.current = mutationId;
+
+    var isLatest = function isLatest() {
+      return latestMutationRef.current === mutationId;
+    };
+
+    var snapshotValue;
+    return _catch$2(function () {
+      dispatch({
+        type: ActionType$1.Loading
+      });
+      return _await$1(config.onMutate == null ? void 0 : config.onMutate(variables), function (_config$onMutate) {
+        snapshotValue = _config$onMutate;
+        return _await$1(getMutationFn()(variables), function (data) {
+          if (isLatest()) {
+            dispatch({
+              type: ActionType$1.Resolve,
+              data: data
+            });
+          }
+
+          return _await$1(config.onSuccess == null ? void 0 : config.onSuccess(data, variables), function () {
+            return _await$1(mutateConfig.onSuccess == null ? void 0 : mutateConfig.onSuccess(data, variables), function () {
+              return _await$1(config.onSettled == null ? void 0 : config.onSettled(data, null, variables), function () {
+                return _await$1(mutateConfig.onSettled == null ? void 0 : mutateConfig.onSettled(data, null, variables), function () {
+                  return data;
+                });
+              });
+            });
+          });
+        });
+      });
+    }, function (error) {
+      Console.error(error);
+      return _await$1(config.onError == null ? void 0 : config.onError(error, variables, snapshotValue), function () {
+        return _await$1(mutateConfig.onError == null ? void 0 : mutateConfig.onError(error, variables, snapshotValue), function () {
+          return _await$1(config.onSettled == null ? void 0 : config.onSettled(undefined, error, variables, snapshotValue), function () {
+            return _await$1(mutateConfig.onSettled == null ? void 0 : mutateConfig.onSettled(undefined, error, variables, snapshotValue), function () {
+              var _mutateConfig$throwOn;
+
+              if (isLatest()) {
+                dispatch({
+                  type: ActionType$1.Reject,
+                  error: error
+                });
+              }
+
+              if ((_mutateConfig$throwOn = mutateConfig.throwOnError) != null ? _mutateConfig$throwOn : config.throwOnError) {
+                throw error;
+              }
+            });
+          });
+        });
+      });
+    });
+  }), [dispatch, getConfig, getMutationFn]);
+  var reset = react__WEBPACK_IMPORTED_MODULE_0__.useCallback(function () {
+    dispatch({
+      type: ActionType$1.Reset
+    });
+  }, [dispatch]);
+  react__WEBPACK_IMPORTED_MODULE_0__.useEffect(function () {
+    var _getConfig = getConfig(),
+        suspense = _getConfig.suspense,
+        useErrorBoundary = _getConfig.useErrorBoundary;
+
+    if ((useErrorBoundary != null ? useErrorBoundary : suspense) && state.error) {
+      throw state.error;
+    }
+  }, [getConfig, state.error]);
+  return [mutate, _extends({}, state, {
+    reset: reset
+  })];
+}
+
+function useBaseQuery(config) {
+  if (config === void 0) {
+    config = {};
+  }
+
+  // Make a rerender function
+  var rerender = useRerenderer(); // Create query observer
+
+  var observerRef = react__WEBPACK_IMPORTED_MODULE_0__.useRef();
+  var firstRender = !observerRef.current;
+  var observer = observerRef.current || new QueryObserver(config);
+  observerRef.current = observer; // Subscribe to the observer
+
+  react__WEBPACK_IMPORTED_MODULE_0__.useEffect(function () {
+    return observer.subscribe(function () {
+      Promise.resolve().then(rerender);
+    });
+  }, [observer, rerender]); // Update config
+
+  if (!firstRender) {
+    observer.updateConfig(config);
+  }
+
+  var result = observer.getCurrentResult(); // Handle suspense
+
+  if (config.suspense || config.useErrorBoundary) {
+    if (result.isError && result.query.state.throwInErrorBoundary) {
+      throw result.error;
+    }
+
+    if (config.enabled && config.suspense && !result.isSuccess) {
+      throw observer.fetch().finally(function () {
+        observer.unsubscribe(true);
+      });
+    }
+  }
+
+  return result;
+}
+
+function useQueryArgs(args) {
+  var queryCache = useQueryCache();
+  var configContext = useConfigContext();
+
+  var _getQueryArgs = getQueryArgs(args),
+      queryKey = _getQueryArgs[0],
+      config = _getQueryArgs[1],
+      options = _getQueryArgs[2]; // Build the final config
+
+
+  var resolvedConfig = _extends({}, configContext.shared, configContext.queries, {
+    queryCache: queryCache
+  }, config);
+
+  return [queryKey, resolvedConfig, options];
+}
+
+// Implementation
+function useQuery() {
+  for (var _len = arguments.length, args = new Array(_len), _key = 0; _key < _len; _key++) {
+    args[_key] = arguments[_key];
+  }
+
+  var config = useQueryArgs(args)[1];
+  return useBaseQuery(config);
+}
+
+// as the query key changes, we keep the results from the
+// last query and use them as placeholder data in the next one
+// We DON'T use it as initial data though. That's important
+// TYPES
+
+// Implementation
+function usePaginatedQuery() {
+  for (var _len = arguments.length, args = new Array(_len), _key = 0; _key < _len; _key++) {
+    args[_key] = arguments[_key];
+  }
+
+  var config = useQueryArgs(args)[1];
+  config = _extends({}, config, {
+    keepPreviousData: true
+  });
+  var result = useBaseQuery(config);
+  return _extends({}, result, {
+    resolvedData: result.data,
+    latestData: result.query.state.data === result.data ? result.data : undefined
+  });
+}
+
+// Implementation
+function useInfiniteQuery() {
+  for (var _len = arguments.length, args = new Array(_len), _key = 0; _key < _len; _key++) {
+    args[_key] = arguments[_key];
+  }
+
+  var config = useQueryArgs(args)[1];
+  config = _extends({}, config, {
+    infinite: true
+  });
+  return useBaseQuery(config);
+}
+
+
+//# sourceMappingURL=react-query.mjs.map
+
+
+/***/ }),
+
 /***/ "./node_modules/react-router-dom/esm/react-router-dom.js":
 /*!***************************************************************!*\
   !*** ./node_modules/react-router-dom/esm/react-router-dom.js ***!
@@ -55569,6 +57672,746 @@ if (false) {} else {
 
 /***/ }),
 
+/***/ "./node_modules/regenerator-runtime/runtime.js":
+/*!*****************************************************!*\
+  !*** ./node_modules/regenerator-runtime/runtime.js ***!
+  \*****************************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+/**
+ * Copyright (c) 2014-present, Facebook, Inc.
+ *
+ * This source code is licensed under the MIT license found in the
+ * LICENSE file in the root directory of this source tree.
+ */
+
+var runtime = (function (exports) {
+  "use strict";
+
+  var Op = Object.prototype;
+  var hasOwn = Op.hasOwnProperty;
+  var undefined; // More compressible than void 0.
+  var $Symbol = typeof Symbol === "function" ? Symbol : {};
+  var iteratorSymbol = $Symbol.iterator || "@@iterator";
+  var asyncIteratorSymbol = $Symbol.asyncIterator || "@@asyncIterator";
+  var toStringTagSymbol = $Symbol.toStringTag || "@@toStringTag";
+
+  function wrap(innerFn, outerFn, self, tryLocsList) {
+    // If outerFn provided and outerFn.prototype is a Generator, then outerFn.prototype instanceof Generator.
+    var protoGenerator = outerFn && outerFn.prototype instanceof Generator ? outerFn : Generator;
+    var generator = Object.create(protoGenerator.prototype);
+    var context = new Context(tryLocsList || []);
+
+    // The ._invoke method unifies the implementations of the .next,
+    // .throw, and .return methods.
+    generator._invoke = makeInvokeMethod(innerFn, self, context);
+
+    return generator;
+  }
+  exports.wrap = wrap;
+
+  // Try/catch helper to minimize deoptimizations. Returns a completion
+  // record like context.tryEntries[i].completion. This interface could
+  // have been (and was previously) designed to take a closure to be
+  // invoked without arguments, but in all the cases we care about we
+  // already have an existing method we want to call, so there's no need
+  // to create a new function object. We can even get away with assuming
+  // the method takes exactly one argument, since that happens to be true
+  // in every case, so we don't have to touch the arguments object. The
+  // only additional allocation required is the completion record, which
+  // has a stable shape and so hopefully should be cheap to allocate.
+  function tryCatch(fn, obj, arg) {
+    try {
+      return { type: "normal", arg: fn.call(obj, arg) };
+    } catch (err) {
+      return { type: "throw", arg: err };
+    }
+  }
+
+  var GenStateSuspendedStart = "suspendedStart";
+  var GenStateSuspendedYield = "suspendedYield";
+  var GenStateExecuting = "executing";
+  var GenStateCompleted = "completed";
+
+  // Returning this object from the innerFn has the same effect as
+  // breaking out of the dispatch switch statement.
+  var ContinueSentinel = {};
+
+  // Dummy constructor functions that we use as the .constructor and
+  // .constructor.prototype properties for functions that return Generator
+  // objects. For full spec compliance, you may wish to configure your
+  // minifier not to mangle the names of these two functions.
+  function Generator() {}
+  function GeneratorFunction() {}
+  function GeneratorFunctionPrototype() {}
+
+  // This is a polyfill for %IteratorPrototype% for environments that
+  // don't natively support it.
+  var IteratorPrototype = {};
+  IteratorPrototype[iteratorSymbol] = function () {
+    return this;
+  };
+
+  var getProto = Object.getPrototypeOf;
+  var NativeIteratorPrototype = getProto && getProto(getProto(values([])));
+  if (NativeIteratorPrototype &&
+      NativeIteratorPrototype !== Op &&
+      hasOwn.call(NativeIteratorPrototype, iteratorSymbol)) {
+    // This environment has a native %IteratorPrototype%; use it instead
+    // of the polyfill.
+    IteratorPrototype = NativeIteratorPrototype;
+  }
+
+  var Gp = GeneratorFunctionPrototype.prototype =
+    Generator.prototype = Object.create(IteratorPrototype);
+  GeneratorFunction.prototype = Gp.constructor = GeneratorFunctionPrototype;
+  GeneratorFunctionPrototype.constructor = GeneratorFunction;
+  GeneratorFunctionPrototype[toStringTagSymbol] =
+    GeneratorFunction.displayName = "GeneratorFunction";
+
+  // Helper for defining the .next, .throw, and .return methods of the
+  // Iterator interface in terms of a single ._invoke method.
+  function defineIteratorMethods(prototype) {
+    ["next", "throw", "return"].forEach(function(method) {
+      prototype[method] = function(arg) {
+        return this._invoke(method, arg);
+      };
+    });
+  }
+
+  exports.isGeneratorFunction = function(genFun) {
+    var ctor = typeof genFun === "function" && genFun.constructor;
+    return ctor
+      ? ctor === GeneratorFunction ||
+        // For the native GeneratorFunction constructor, the best we can
+        // do is to check its .name property.
+        (ctor.displayName || ctor.name) === "GeneratorFunction"
+      : false;
+  };
+
+  exports.mark = function(genFun) {
+    if (Object.setPrototypeOf) {
+      Object.setPrototypeOf(genFun, GeneratorFunctionPrototype);
+    } else {
+      genFun.__proto__ = GeneratorFunctionPrototype;
+      if (!(toStringTagSymbol in genFun)) {
+        genFun[toStringTagSymbol] = "GeneratorFunction";
+      }
+    }
+    genFun.prototype = Object.create(Gp);
+    return genFun;
+  };
+
+  // Within the body of any async function, `await x` is transformed to
+  // `yield regeneratorRuntime.awrap(x)`, so that the runtime can test
+  // `hasOwn.call(value, "__await")` to determine if the yielded value is
+  // meant to be awaited.
+  exports.awrap = function(arg) {
+    return { __await: arg };
+  };
+
+  function AsyncIterator(generator, PromiseImpl) {
+    function invoke(method, arg, resolve, reject) {
+      var record = tryCatch(generator[method], generator, arg);
+      if (record.type === "throw") {
+        reject(record.arg);
+      } else {
+        var result = record.arg;
+        var value = result.value;
+        if (value &&
+            typeof value === "object" &&
+            hasOwn.call(value, "__await")) {
+          return PromiseImpl.resolve(value.__await).then(function(value) {
+            invoke("next", value, resolve, reject);
+          }, function(err) {
+            invoke("throw", err, resolve, reject);
+          });
+        }
+
+        return PromiseImpl.resolve(value).then(function(unwrapped) {
+          // When a yielded Promise is resolved, its final value becomes
+          // the .value of the Promise<{value,done}> result for the
+          // current iteration.
+          result.value = unwrapped;
+          resolve(result);
+        }, function(error) {
+          // If a rejected Promise was yielded, throw the rejection back
+          // into the async generator function so it can be handled there.
+          return invoke("throw", error, resolve, reject);
+        });
+      }
+    }
+
+    var previousPromise;
+
+    function enqueue(method, arg) {
+      function callInvokeWithMethodAndArg() {
+        return new PromiseImpl(function(resolve, reject) {
+          invoke(method, arg, resolve, reject);
+        });
+      }
+
+      return previousPromise =
+        // If enqueue has been called before, then we want to wait until
+        // all previous Promises have been resolved before calling invoke,
+        // so that results are always delivered in the correct order. If
+        // enqueue has not been called before, then it is important to
+        // call invoke immediately, without waiting on a callback to fire,
+        // so that the async generator function has the opportunity to do
+        // any necessary setup in a predictable way. This predictability
+        // is why the Promise constructor synchronously invokes its
+        // executor callback, and why async functions synchronously
+        // execute code before the first await. Since we implement simple
+        // async functions in terms of async generators, it is especially
+        // important to get this right, even though it requires care.
+        previousPromise ? previousPromise.then(
+          callInvokeWithMethodAndArg,
+          // Avoid propagating failures to Promises returned by later
+          // invocations of the iterator.
+          callInvokeWithMethodAndArg
+        ) : callInvokeWithMethodAndArg();
+    }
+
+    // Define the unified helper method that is used to implement .next,
+    // .throw, and .return (see defineIteratorMethods).
+    this._invoke = enqueue;
+  }
+
+  defineIteratorMethods(AsyncIterator.prototype);
+  AsyncIterator.prototype[asyncIteratorSymbol] = function () {
+    return this;
+  };
+  exports.AsyncIterator = AsyncIterator;
+
+  // Note that simple async functions are implemented on top of
+  // AsyncIterator objects; they just return a Promise for the value of
+  // the final result produced by the iterator.
+  exports.async = function(innerFn, outerFn, self, tryLocsList, PromiseImpl) {
+    if (PromiseImpl === void 0) PromiseImpl = Promise;
+
+    var iter = new AsyncIterator(
+      wrap(innerFn, outerFn, self, tryLocsList),
+      PromiseImpl
+    );
+
+    return exports.isGeneratorFunction(outerFn)
+      ? iter // If outerFn is a generator, return the full iterator.
+      : iter.next().then(function(result) {
+          return result.done ? result.value : iter.next();
+        });
+  };
+
+  function makeInvokeMethod(innerFn, self, context) {
+    var state = GenStateSuspendedStart;
+
+    return function invoke(method, arg) {
+      if (state === GenStateExecuting) {
+        throw new Error("Generator is already running");
+      }
+
+      if (state === GenStateCompleted) {
+        if (method === "throw") {
+          throw arg;
+        }
+
+        // Be forgiving, per 25.3.3.3.3 of the spec:
+        // https://people.mozilla.org/~jorendorff/es6-draft.html#sec-generatorresume
+        return doneResult();
+      }
+
+      context.method = method;
+      context.arg = arg;
+
+      while (true) {
+        var delegate = context.delegate;
+        if (delegate) {
+          var delegateResult = maybeInvokeDelegate(delegate, context);
+          if (delegateResult) {
+            if (delegateResult === ContinueSentinel) continue;
+            return delegateResult;
+          }
+        }
+
+        if (context.method === "next") {
+          // Setting context._sent for legacy support of Babel's
+          // function.sent implementation.
+          context.sent = context._sent = context.arg;
+
+        } else if (context.method === "throw") {
+          if (state === GenStateSuspendedStart) {
+            state = GenStateCompleted;
+            throw context.arg;
+          }
+
+          context.dispatchException(context.arg);
+
+        } else if (context.method === "return") {
+          context.abrupt("return", context.arg);
+        }
+
+        state = GenStateExecuting;
+
+        var record = tryCatch(innerFn, self, context);
+        if (record.type === "normal") {
+          // If an exception is thrown from innerFn, we leave state ===
+          // GenStateExecuting and loop back for another invocation.
+          state = context.done
+            ? GenStateCompleted
+            : GenStateSuspendedYield;
+
+          if (record.arg === ContinueSentinel) {
+            continue;
+          }
+
+          return {
+            value: record.arg,
+            done: context.done
+          };
+
+        } else if (record.type === "throw") {
+          state = GenStateCompleted;
+          // Dispatch the exception by looping back around to the
+          // context.dispatchException(context.arg) call above.
+          context.method = "throw";
+          context.arg = record.arg;
+        }
+      }
+    };
+  }
+
+  // Call delegate.iterator[context.method](context.arg) and handle the
+  // result, either by returning a { value, done } result from the
+  // delegate iterator, or by modifying context.method and context.arg,
+  // setting context.delegate to null, and returning the ContinueSentinel.
+  function maybeInvokeDelegate(delegate, context) {
+    var method = delegate.iterator[context.method];
+    if (method === undefined) {
+      // A .throw or .return when the delegate iterator has no .throw
+      // method always terminates the yield* loop.
+      context.delegate = null;
+
+      if (context.method === "throw") {
+        // Note: ["return"] must be used for ES3 parsing compatibility.
+        if (delegate.iterator["return"]) {
+          // If the delegate iterator has a return method, give it a
+          // chance to clean up.
+          context.method = "return";
+          context.arg = undefined;
+          maybeInvokeDelegate(delegate, context);
+
+          if (context.method === "throw") {
+            // If maybeInvokeDelegate(context) changed context.method from
+            // "return" to "throw", let that override the TypeError below.
+            return ContinueSentinel;
+          }
+        }
+
+        context.method = "throw";
+        context.arg = new TypeError(
+          "The iterator does not provide a 'throw' method");
+      }
+
+      return ContinueSentinel;
+    }
+
+    var record = tryCatch(method, delegate.iterator, context.arg);
+
+    if (record.type === "throw") {
+      context.method = "throw";
+      context.arg = record.arg;
+      context.delegate = null;
+      return ContinueSentinel;
+    }
+
+    var info = record.arg;
+
+    if (! info) {
+      context.method = "throw";
+      context.arg = new TypeError("iterator result is not an object");
+      context.delegate = null;
+      return ContinueSentinel;
+    }
+
+    if (info.done) {
+      // Assign the result of the finished delegate to the temporary
+      // variable specified by delegate.resultName (see delegateYield).
+      context[delegate.resultName] = info.value;
+
+      // Resume execution at the desired location (see delegateYield).
+      context.next = delegate.nextLoc;
+
+      // If context.method was "throw" but the delegate handled the
+      // exception, let the outer generator proceed normally. If
+      // context.method was "next", forget context.arg since it has been
+      // "consumed" by the delegate iterator. If context.method was
+      // "return", allow the original .return call to continue in the
+      // outer generator.
+      if (context.method !== "return") {
+        context.method = "next";
+        context.arg = undefined;
+      }
+
+    } else {
+      // Re-yield the result returned by the delegate method.
+      return info;
+    }
+
+    // The delegate iterator is finished, so forget it and continue with
+    // the outer generator.
+    context.delegate = null;
+    return ContinueSentinel;
+  }
+
+  // Define Generator.prototype.{next,throw,return} in terms of the
+  // unified ._invoke helper method.
+  defineIteratorMethods(Gp);
+
+  Gp[toStringTagSymbol] = "Generator";
+
+  // A Generator should always return itself as the iterator object when the
+  // @@iterator function is called on it. Some browsers' implementations of the
+  // iterator prototype chain incorrectly implement this, causing the Generator
+  // object to not be returned from this call. This ensures that doesn't happen.
+  // See https://github.com/facebook/regenerator/issues/274 for more details.
+  Gp[iteratorSymbol] = function() {
+    return this;
+  };
+
+  Gp.toString = function() {
+    return "[object Generator]";
+  };
+
+  function pushTryEntry(locs) {
+    var entry = { tryLoc: locs[0] };
+
+    if (1 in locs) {
+      entry.catchLoc = locs[1];
+    }
+
+    if (2 in locs) {
+      entry.finallyLoc = locs[2];
+      entry.afterLoc = locs[3];
+    }
+
+    this.tryEntries.push(entry);
+  }
+
+  function resetTryEntry(entry) {
+    var record = entry.completion || {};
+    record.type = "normal";
+    delete record.arg;
+    entry.completion = record;
+  }
+
+  function Context(tryLocsList) {
+    // The root entry object (effectively a try statement without a catch
+    // or a finally block) gives us a place to store values thrown from
+    // locations where there is no enclosing try statement.
+    this.tryEntries = [{ tryLoc: "root" }];
+    tryLocsList.forEach(pushTryEntry, this);
+    this.reset(true);
+  }
+
+  exports.keys = function(object) {
+    var keys = [];
+    for (var key in object) {
+      keys.push(key);
+    }
+    keys.reverse();
+
+    // Rather than returning an object with a next method, we keep
+    // things simple and return the next function itself.
+    return function next() {
+      while (keys.length) {
+        var key = keys.pop();
+        if (key in object) {
+          next.value = key;
+          next.done = false;
+          return next;
+        }
+      }
+
+      // To avoid creating an additional object, we just hang the .value
+      // and .done properties off the next function object itself. This
+      // also ensures that the minifier will not anonymize the function.
+      next.done = true;
+      return next;
+    };
+  };
+
+  function values(iterable) {
+    if (iterable) {
+      var iteratorMethod = iterable[iteratorSymbol];
+      if (iteratorMethod) {
+        return iteratorMethod.call(iterable);
+      }
+
+      if (typeof iterable.next === "function") {
+        return iterable;
+      }
+
+      if (!isNaN(iterable.length)) {
+        var i = -1, next = function next() {
+          while (++i < iterable.length) {
+            if (hasOwn.call(iterable, i)) {
+              next.value = iterable[i];
+              next.done = false;
+              return next;
+            }
+          }
+
+          next.value = undefined;
+          next.done = true;
+
+          return next;
+        };
+
+        return next.next = next;
+      }
+    }
+
+    // Return an iterator with no values.
+    return { next: doneResult };
+  }
+  exports.values = values;
+
+  function doneResult() {
+    return { value: undefined, done: true };
+  }
+
+  Context.prototype = {
+    constructor: Context,
+
+    reset: function(skipTempReset) {
+      this.prev = 0;
+      this.next = 0;
+      // Resetting context._sent for legacy support of Babel's
+      // function.sent implementation.
+      this.sent = this._sent = undefined;
+      this.done = false;
+      this.delegate = null;
+
+      this.method = "next";
+      this.arg = undefined;
+
+      this.tryEntries.forEach(resetTryEntry);
+
+      if (!skipTempReset) {
+        for (var name in this) {
+          // Not sure about the optimal order of these conditions:
+          if (name.charAt(0) === "t" &&
+              hasOwn.call(this, name) &&
+              !isNaN(+name.slice(1))) {
+            this[name] = undefined;
+          }
+        }
+      }
+    },
+
+    stop: function() {
+      this.done = true;
+
+      var rootEntry = this.tryEntries[0];
+      var rootRecord = rootEntry.completion;
+      if (rootRecord.type === "throw") {
+        throw rootRecord.arg;
+      }
+
+      return this.rval;
+    },
+
+    dispatchException: function(exception) {
+      if (this.done) {
+        throw exception;
+      }
+
+      var context = this;
+      function handle(loc, caught) {
+        record.type = "throw";
+        record.arg = exception;
+        context.next = loc;
+
+        if (caught) {
+          // If the dispatched exception was caught by a catch block,
+          // then let that catch block handle the exception normally.
+          context.method = "next";
+          context.arg = undefined;
+        }
+
+        return !! caught;
+      }
+
+      for (var i = this.tryEntries.length - 1; i >= 0; --i) {
+        var entry = this.tryEntries[i];
+        var record = entry.completion;
+
+        if (entry.tryLoc === "root") {
+          // Exception thrown outside of any try block that could handle
+          // it, so set the completion value of the entire function to
+          // throw the exception.
+          return handle("end");
+        }
+
+        if (entry.tryLoc <= this.prev) {
+          var hasCatch = hasOwn.call(entry, "catchLoc");
+          var hasFinally = hasOwn.call(entry, "finallyLoc");
+
+          if (hasCatch && hasFinally) {
+            if (this.prev < entry.catchLoc) {
+              return handle(entry.catchLoc, true);
+            } else if (this.prev < entry.finallyLoc) {
+              return handle(entry.finallyLoc);
+            }
+
+          } else if (hasCatch) {
+            if (this.prev < entry.catchLoc) {
+              return handle(entry.catchLoc, true);
+            }
+
+          } else if (hasFinally) {
+            if (this.prev < entry.finallyLoc) {
+              return handle(entry.finallyLoc);
+            }
+
+          } else {
+            throw new Error("try statement without catch or finally");
+          }
+        }
+      }
+    },
+
+    abrupt: function(type, arg) {
+      for (var i = this.tryEntries.length - 1; i >= 0; --i) {
+        var entry = this.tryEntries[i];
+        if (entry.tryLoc <= this.prev &&
+            hasOwn.call(entry, "finallyLoc") &&
+            this.prev < entry.finallyLoc) {
+          var finallyEntry = entry;
+          break;
+        }
+      }
+
+      if (finallyEntry &&
+          (type === "break" ||
+           type === "continue") &&
+          finallyEntry.tryLoc <= arg &&
+          arg <= finallyEntry.finallyLoc) {
+        // Ignore the finally entry if control is not jumping to a
+        // location outside the try/catch block.
+        finallyEntry = null;
+      }
+
+      var record = finallyEntry ? finallyEntry.completion : {};
+      record.type = type;
+      record.arg = arg;
+
+      if (finallyEntry) {
+        this.method = "next";
+        this.next = finallyEntry.finallyLoc;
+        return ContinueSentinel;
+      }
+
+      return this.complete(record);
+    },
+
+    complete: function(record, afterLoc) {
+      if (record.type === "throw") {
+        throw record.arg;
+      }
+
+      if (record.type === "break" ||
+          record.type === "continue") {
+        this.next = record.arg;
+      } else if (record.type === "return") {
+        this.rval = this.arg = record.arg;
+        this.method = "return";
+        this.next = "end";
+      } else if (record.type === "normal" && afterLoc) {
+        this.next = afterLoc;
+      }
+
+      return ContinueSentinel;
+    },
+
+    finish: function(finallyLoc) {
+      for (var i = this.tryEntries.length - 1; i >= 0; --i) {
+        var entry = this.tryEntries[i];
+        if (entry.finallyLoc === finallyLoc) {
+          this.complete(entry.completion, entry.afterLoc);
+          resetTryEntry(entry);
+          return ContinueSentinel;
+        }
+      }
+    },
+
+    "catch": function(tryLoc) {
+      for (var i = this.tryEntries.length - 1; i >= 0; --i) {
+        var entry = this.tryEntries[i];
+        if (entry.tryLoc === tryLoc) {
+          var record = entry.completion;
+          if (record.type === "throw") {
+            var thrown = record.arg;
+            resetTryEntry(entry);
+          }
+          return thrown;
+        }
+      }
+
+      // The context.catch method must only be called with a location
+      // argument that corresponds to a known catch block.
+      throw new Error("illegal catch attempt");
+    },
+
+    delegateYield: function(iterable, resultName, nextLoc) {
+      this.delegate = {
+        iterator: values(iterable),
+        resultName: resultName,
+        nextLoc: nextLoc
+      };
+
+      if (this.method === "next") {
+        // Deliberately forget the last sent value so that we don't
+        // accidentally pass it on to the delegate.
+        this.arg = undefined;
+      }
+
+      return ContinueSentinel;
+    }
+  };
+
+  // Regardless of whether this script is executing as a CommonJS module
+  // or not, return the runtime object so that we can declare the variable
+  // regeneratorRuntime in the outer scope, which allows this module to be
+  // injected easily by `bin/regenerator --include-runtime script.js`.
+  return exports;
+
+}(
+  // If this script is executing as a CommonJS module, use module.exports
+  // as the regeneratorRuntime namespace. Otherwise create a new empty
+  // object. Either way, the resulting object will be used to initialize
+  // the regeneratorRuntime variable at the top of this file.
+   true ? module.exports : undefined
+));
+
+try {
+  regeneratorRuntime = runtime;
+} catch (accidentalStrictMode) {
+  // This module should not be running in strict mode, so the above
+  // assignment should always work unless something is misconfigured. Just
+  // in case runtime.js accidentally runs in strict mode, we can escape
+  // strict mode using a global Function call. This could conceivably fail
+  // if a Content Security Policy forbids using Function, but in that case
+  // the proper solution is to fix the accidental strict mode problem. If
+  // you've misconfigured your bundler to force strict mode and applied a
+  // CSP to forbid Function, and you're not willing to fix either of those
+  // problems, please detail your unique predicament in a GitHub issue.
+  Function("r", "regeneratorRuntime = r")(runtime);
+}
+
+
+/***/ }),
+
 /***/ "./node_modules/resolve-pathname/esm/resolve-pathname.js":
 /*!***************************************************************!*\
   !*** ./node_modules/resolve-pathname/esm/resolve-pathname.js ***!
@@ -57893,24 +60736,100 @@ var Game = function Game() {
 
 "use strict";
 __webpack_require__.r(__webpack_exports__);
-/* harmony import */ var react__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! react */ "./node_modules/react/index.js");
-/* harmony import */ var react__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(react__WEBPACK_IMPORTED_MODULE_0__);
-/* harmony import */ var _Filter__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ../Filter */ "./resources/js/components/Filter.jsx");
-/* harmony import */ var react_bootstrap__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! react-bootstrap */ "./node_modules/react-bootstrap/esm/index.js");
-/* harmony import */ var _Game__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ../Game */ "./resources/js/components/Game.jsx");
+/* harmony import */ var _babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! @babel/runtime/regenerator */ "./node_modules/@babel/runtime/regenerator/index.js");
+/* harmony import */ var _babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(_babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0__);
+/* harmony import */ var react__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! react */ "./node_modules/react/index.js");
+/* harmony import */ var react__WEBPACK_IMPORTED_MODULE_1___default = /*#__PURE__*/__webpack_require__.n(react__WEBPACK_IMPORTED_MODULE_1__);
+/* harmony import */ var react_query__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! react-query */ "./node_modules/react-query/dist/react-query.mjs");
+/* harmony import */ var _Filter__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ../Filter */ "./resources/js/components/Filter.jsx");
+/* harmony import */ var react_bootstrap__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! react-bootstrap */ "./node_modules/react-bootstrap/esm/index.js");
+/* harmony import */ var _Game__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! ../Game */ "./resources/js/components/Game.jsx");
+
+
+function asyncGeneratorStep(gen, resolve, reject, _next, _throw, key, arg) { try { var info = gen[key](arg); var value = info.value; } catch (error) { reject(error); return; } if (info.done) { resolve(value); } else { Promise.resolve(value).then(_next, _throw); } }
+
+function _asyncToGenerator(fn) { return function () { var self = this, args = arguments; return new Promise(function (resolve, reject) { var gen = fn.apply(self, args); function _next(value) { asyncGeneratorStep(gen, resolve, reject, _next, _throw, "next", value); } function _throw(err) { asyncGeneratorStep(gen, resolve, reject, _next, _throw, "throw", err); } _next(undefined); }); }; }
+
+function _slicedToArray(arr, i) { return _arrayWithHoles(arr) || _iterableToArrayLimit(arr, i) || _unsupportedIterableToArray(arr, i) || _nonIterableRest(); }
+
+function _nonIterableRest() { throw new TypeError("Invalid attempt to destructure non-iterable instance.\nIn order to be iterable, non-array objects must have a [Symbol.iterator]() method."); }
+
+function _unsupportedIterableToArray(o, minLen) { if (!o) return; if (typeof o === "string") return _arrayLikeToArray(o, minLen); var n = Object.prototype.toString.call(o).slice(8, -1); if (n === "Object" && o.constructor) n = o.constructor.name; if (n === "Map" || n === "Set") return Array.from(o); if (n === "Arguments" || /^(?:Ui|I)nt(?:8|16|32)(?:Clamped)?Array$/.test(n)) return _arrayLikeToArray(o, minLen); }
+
+function _arrayLikeToArray(arr, len) { if (len == null || len > arr.length) len = arr.length; for (var i = 0, arr2 = new Array(len); i < len; i++) { arr2[i] = arr[i]; } return arr2; }
+
+function _iterableToArrayLimit(arr, i) { if (typeof Symbol === "undefined" || !(Symbol.iterator in Object(arr))) return; var _arr = []; var _n = true; var _d = false; var _e = undefined; try { for (var _i = arr[Symbol.iterator](), _s; !(_n = (_s = _i.next()).done); _n = true) { _arr.push(_s.value); if (i && _arr.length === i) break; } } catch (err) { _d = true; _e = err; } finally { try { if (!_n && _i["return"] != null) _i["return"](); } finally { if (_d) throw _e; } } return _arr; }
+
+function _arrayWithHoles(arr) { if (Array.isArray(arr)) return arr; }
+
+
 
 
 
 
 
 var Home = function Home() {
-  return /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(react_bootstrap__WEBPACK_IMPORTED_MODULE_2__["Container"], {
+  var _useQuery = Object(react_query__WEBPACK_IMPORTED_MODULE_2__["useQuery"])('games-doc', function () {
+    return getGamesDoc();
+  }),
+      status = _useQuery.status,
+      data = _useQuery.data,
+      isFetching = _useQuery.isFetching,
+      error = _useQuery.error;
+
+  var _useState = Object(react__WEBPACK_IMPORTED_MODULE_1__["useState"])(null),
+      _useState2 = _slicedToArray(_useState, 2),
+      gamesDoc = _useState2[0],
+      setGamesDoc = _useState2[1];
+
+  var _useState3 = Object(react__WEBPACK_IMPORTED_MODULE_1__["useState"])("There was an error fetching the games data, \n        please check your internet connection and try again!"),
+      _useState4 = _slicedToArray(_useState3, 2),
+      errorMessage = _useState4[0],
+      setErrorMessage = _useState4[1];
+  /**
+   * Fetch the games document from the server
+   */
+
+
+  var getGamesDoc = /*#__PURE__*/function () {
+    var _ref = _asyncToGenerator( /*#__PURE__*/_babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0___default.a.mark(function _callee() {
+      var doc;
+      return _babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0___default.a.wrap(function _callee$(_context) {
+        while (1) {
+          switch (_context.prev = _context.next) {
+            case 0:
+              _context.next = 2;
+              return fetch('https://public.connectnow.org.uk/applicant-test/');
+
+            case 2:
+              doc = _context.sent;
+              setGamesDoc(doc);
+              console.log(gamesDoc);
+
+            case 5:
+            case "end":
+              return _context.stop();
+          }
+        }
+      }, _callee);
+    }));
+
+    return function getGamesDoc() {
+      return _ref.apply(this, arguments);
+    };
+  }();
+
+  var displayGames = function displayGames() {
+    return isFetching ? 'Loading...' : error ? errorMessage : /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_1___default.a.createElement(_Game__WEBPACK_IMPORTED_MODULE_5__["default"], null);
+  };
+
+  return /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_1___default.a.createElement(react_bootstrap__WEBPACK_IMPORTED_MODULE_4__["Container"], {
     className: "col-12 game-lookup-container"
-  }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("section", {
+  }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_1___default.a.createElement("section", {
     className: "filter"
-  }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(_Filter__WEBPACK_IMPORTED_MODULE_1__["default"], null)), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("section", {
+  }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_1___default.a.createElement(_Filter__WEBPACK_IMPORTED_MODULE_3__["default"], null)), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_1___default.a.createElement("section", {
     className: "game-list"
-  }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(_Game__WEBPACK_IMPORTED_MODULE_3__["default"], null)));
+  }, displayGames()));
 };
 
 /* harmony default export */ __webpack_exports__["default"] = (Home);
@@ -57976,8 +60895,8 @@ react_dom__WEBPACK_IMPORTED_MODULE_0___default.a.render( /*#__PURE__*/react__WEB
 /*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
 
-__webpack_require__(/*! C:\Users\cacious\Documents\Cacious\game-lookup\resources\js\index.jsx */"./resources/js/index.jsx");
-module.exports = __webpack_require__(/*! C:\Users\cacious\Documents\Cacious\game-lookup\resources\sass\style.scss */"./resources/sass/style.scss");
+__webpack_require__(/*! E:\Gulait - git repository [product catalog]\Gulait Testing\game-lookup\resources\js\index.jsx */"./resources/js/index.jsx");
+module.exports = __webpack_require__(/*! E:\Gulait - git repository [product catalog]\Gulait Testing\game-lookup\resources\sass\style.scss */"./resources/sass/style.scss");
 
 
 /***/ })
