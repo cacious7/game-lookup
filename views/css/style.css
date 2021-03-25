@@ -11028,32 +11028,37 @@ body {
 
 h1,
 button,
-label {
-  color: #ffffff;
+label,
+a {
+  color: #ffffff !important;
 }
 
 h2,
 button,
-label {
-  color: #ffffff;
+label,
+a {
+  color: #ffffff !important;
 }
 
 h3,
 button,
-label {
-  color: #ffffff;
+label,
+a {
+  color: #ffffff !important;
 }
 
 h4,
 button,
-label {
-  color: #ffffff;
+label,
+a {
+  color: #ffffff !important;
 }
 
 h5,
 button,
-label {
-  color: #ffffff;
+label,
+a {
+  color: #ffffff !important;
 }
 
 input,
@@ -11072,13 +11077,18 @@ button {
 .panel {
   background: #0e1a2b;
   padding: 1rem;
-  margin: 1rem 0 0;
+  margin: 1rem 0 2rem;
 }
 
 /* Font-Sizes */
 
-h2 {
+.game-info h2 {
   font-size: 1.2rem;
+  margin: 0;
+}
+
+.filter h3 {
+  font-size: 1.05rem;
   margin-bottom: 1.1rem;
 }
 
@@ -11112,11 +11122,26 @@ button {
 
 .game {
   height: 15rem;
+  padding: 0;
+}
+
+.game .rating {
+  margin: 0;
+  position: absolute;
+  color: white;
+  padding: 0.5rem;
+  background: #5692e8;
+  top: 0.5rem;
+  right: 0.7rem;
+  text-align: center;
+  border-radius: 45px;
+  font-size: 1rem;
+  line-height: 0.5rem;
 }
 
 .game .game-img {
-  max-height: 6.5rem;
-  min-height: 6.5rem;
+  max-height: 7.5rem;
+  min-height: 7.5rem;
   overflow: hidden;
 }
 
@@ -11125,8 +11150,9 @@ button {
 }
 
 .game .game-info {
-  max-height: 6.5rem;
-  min-height: 6.5rem;
+  max-height: 7.5rem;
+  min-height: 7.5rem;
+  padding: 1rem;
 }
 
 .game .game-info p {
@@ -11137,5 +11163,40 @@ button {
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
+  margin-top: 0.5rem;
+}
+
+/* Navigation Design */
+
+div.navbar-nav {
+  padding-left: 1rem;
+}
+
+a h2.highlighter {
+  display: none;
+  line-height: 2rem;
+  font-size: 2.2rem;
+  position: relative;
+  opacity: 0.06;
+  top: 0.8rem;
+  left: -1.2rem;
+}
+
+a h2 {
+  font-size: 1.3rem;
+  margin-bottom: 0;
+}
+
+.active h2.highlighter {
+  display: flex;
+}
+
+.navigation {
+  padding-top: 0;
+  padding-bottom: 1.5rem;
+}
+
+.navigation a.active {
+  padding: 0 0 1rem;
 }
 

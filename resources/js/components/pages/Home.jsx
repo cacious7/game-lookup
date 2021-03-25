@@ -14,6 +14,7 @@ const Home = () => {
 
     /**
      * Fetch the games document from the server
+     * @return {Void}
      */
     const getGamesDoc = async () => {
         const doc = await fetch('https://public.connectnow.org.uk/applicant-test/');
@@ -21,8 +22,14 @@ const Home = () => {
         console.log(gamesDoc);
     }
 
+    /**
+     * Displays the game preview cards based on
+     * the result from fetching of the game data/doc
+     * @returns {Void}
+     */
     const displayGames = () => {
-        return isFetching ? 'Loading...' : error ? errorMessage : (<Game/>);
+        // return isFetching ? 'Loading...' : error ? errorMessage : (<Game/>);
+        return (<Game/>);
     }
 
     return ( 

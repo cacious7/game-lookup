@@ -67,23 +67,29 @@ $background1: #081221;
 $background2: #03080f;
 $background-gradient: linear-gradient(180deg, $background1, $background2) no-repeat;
 
+//Other colors
+$text-color: #c1d1e8;
+$button-color: #5692e8;
+$panel-color: #0e1a2b;
+$input-color: #182c47;
+
 // Body and text
 body {
     background: $background-gradient;
-    color: #c1d1e8;
+    color: $text-color;
     font-size: 12px;
 }
 
 // Headings, Buttons and Labels 
 @for $h from 1 to 6 {
-    h#{$h}, button, label{
-        color: #ffffff;
+    h#{$h}, button, label, a{
+        color: #ffffff !important;
     }
 }
 
 // Input
 input, select {
-    background: #182c47 !important;
+    background: $input-color !important;
     border-radius: 0 !important;
     border-color: transparent !important;
     color: white !important;
@@ -91,24 +97,30 @@ input, select {
 
 //Buttons
 button {
-    background: #5692e8 !important;
-    border-color: #5692e8 !important;
+    background: $button-color !important;
+    border-color: $button-color !important;
 }
 
 // Card / Panel 
 $panel-padding: 1rem;
 
 .panel {
-    background: #0e1a2b;
-    padding: 1rem;
-    margin: 1rem 0 0;
+    background: $panel-color ;
+    padding: $panel-padding;
+    margin: $panel-padding 0 $panel-padding * 2;
 }
 
 /* Font-Sizes */
 
 //headings
-h2 {
+.game-info h2 {
     font-size: 1.2rem;
+    margin: 0;
+
+}
+
+.filter h3 {
+    font-size: 1.05rem;
     margin-bottom: 1.1rem;
 }
 
@@ -142,12 +154,27 @@ button {
 $game-preview-height: 15rem; 
 
 @mixin split-game-preview {
-    max-height: ($game-preview-height/2) - $panel-padding;
-    min-height: ($game-preview-height/2) - $panel-padding;
+    max-height: ($game-preview-height/2);
+    min-height: ($game-preview-height/2);
 }
 
 .game {
     height: $game-preview-height;
+    padding: 0;
+
+    .rating {
+        margin: 0;
+        position: absolute;
+        color: white;
+        padding: .5rem;
+        background: $button-color;
+        top: .5rem;
+        right: .7rem;
+        text-align: center;
+        border-radius: 45px;
+        font-size: 1rem;
+        line-height: .5rem;
+    }
 
     .game-img {
         @include split-game-preview();
@@ -160,6 +187,7 @@ $game-preview-height: 15rem;
 
     .game-info {
         @include split-game-preview();
+        padding: $panel-padding;
 
         p {
             margin-bottom: 0;
@@ -170,7 +198,51 @@ $game-preview-height: 15rem;
             white-space: nowrap;
             overflow: hidden;
             text-overflow: ellipsis;
+            margin-top: $panel-padding / 2;
        }
+    }
+}
+
+/* Navigation Design */
+@mixin offset-highlighter {
+    top: .8rem;
+    left: -1.2rem;
+}
+
+div.navbar-nav {
+    padding-left: $panel-padding;
+}
+
+a {
+    h2.highlighter {
+        display: none;
+        line-height: 2rem;
+        font-size: 2.2rem;
+        position: relative;
+        opacity: 0.06;
+        @include offset-highlighter();
+    }
+
+    h2 {
+        font-size: 1.3rem;
+        margin-bottom: 0;
+    }
+}
+
+//show which link is active by dispaying its highighter
+.active {
+    h2.highlighter {
+        display: flex;
+    }
+}
+
+//correct navigation bar spacing
+.navigation {
+    padding-top: 0;
+    padding-bottom: 1.5rem;
+
+    a.active {
+        padding: 0 0 1rem;
     }
 }
 

@@ -5,7 +5,7 @@ const Filter = () => {
     return (
         <Card className='panel col-sm-12' >
             <Card.Header>
-                <h2>Filter Results</h2>
+                <h3>Filter Results</h3>
             </Card.Header>
             <Card.Body>
                 <Form>
