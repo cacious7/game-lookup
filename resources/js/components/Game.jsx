@@ -2,6 +2,7 @@ import React from 'react';
 import {Card} from 'react-bootstrap';
 
 const Game = () => {
+
     return (
         <Card className='panel col-sm-12 game'>
             <p className='rating'>9</p>

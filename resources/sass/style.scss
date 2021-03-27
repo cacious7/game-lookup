@@ -51,13 +51,6 @@ xl = ≥1200px
 xs = <576px
 
 */
-$break-points: ( 
-    'lg': 992px,
-    'md': 768px, 
-    'sm': 576px, 
-    'xl': 1200px, 
-    'xs': 576px 
-);
 
 
 /* Colors */
@@ -246,6 +239,76 @@ a {
     }
 }
 
+$break-points: ( 
+    'lg': 992px,
+    'md': 768px, 
+    'sm3': 630px,
+    'sm2': 576px,
+    'sm1': 500px,
+    'xl': 1200px, 
+    'xs2': 450px,
+    'xs1': 360px 
+);
+
+/* Responsive design */
+
+//Large mobiles
+@mixin adjust-info ($size) {
+    .game-info {
+        max-width: $size;
+    }
+}
+
+@media (min-width: map-get($map: $break-points, $key: 'xs1')) {
+    .game {
+        flex-direction: row;
+        height: 7.5rem;
+
+        .rating {
+            top: 39%;
+        }
+
+        .game-img {
+            max-width: 8rem;
+        }
+
+        @include adjust-info(55%);
+    }
+}
+
+@media (min-width: map-get($map: $break-points, $key: 'xs2')) {
+    .game {
+        .rating {
+            right: 2rem;
+        }
+    }
+}
+
+
+//Tablets
+@media (min-width: map-get($map: $break-points, $key: 'sm1')) {
+    .game {
+        .game-info {
+            max-width: 60%;
+        }
+    }
+}
+
+@media (min-width: map-get($map: $break-points, $key: 'sm2')) {
+    .game {
+        .game-info {
+            max-width: 65%;
+        }
+    }
+}
+
+@media (min-width: map-get($map: $break-points, $key: 'sm3')) {
+    .game {
+        .game-info {
+            max-width: 70%;
+        }
+    }
+}
 
 
 

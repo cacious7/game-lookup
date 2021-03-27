@@ -11200,3 +11200,48 @@ a h2 {
   padding: 0 0 1rem;
 }
 
+/* Responsive design */
+
+@media (min-width: 360px) {
+  .game {
+    flex-direction: row;
+    height: 7.5rem;
+  }
+
+  .game .rating {
+    top: 39%;
+  }
+
+  .game .game-img {
+    max-width: 8rem;
+  }
+
+  .game .game-info {
+    max-width: 55%;
+  }
+}
+
+@media (min-width: 450px) {
+  .game .rating {
+    right: 2rem;
+  }
+}
+
+@media (min-width: 500px) {
+  .game .game-info {
+    max-width: 60%;
+  }
+}
+
+@media (min-width: 576px) {
+  .game .game-info {
+    max-width: 65%;
+  }
+}
+
+@media (min-width: 630px) {
+  .game .game-info {
+    max-width: 70%;
+  }
+}
+
