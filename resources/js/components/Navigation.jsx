@@ -5,7 +5,7 @@ const Navigation = () => {
     return (
         <Navbar className="navigation" expand='lg'>
             <Nav>
-                <NavLink  className='active' to='/home' >
+                <NavLink className='active' to='/home' >
                     <h2 className='highlighter'>VIDEO</h2>
                     <h2>VIDEO GAMES</h2> 
                 </NavLink>

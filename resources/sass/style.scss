@@ -206,13 +206,15 @@ div.navbar-nav {
     padding-left: $panel-padding;
 }
 
+$highlighter-opacity: 0.06;
+
 a {
     h2.highlighter {
         display: none;
         line-height: 2rem;
         font-size: 2.2rem;
         position: relative;
-        opacity: 0.06;
+        opacity: $highlighter-opacity;
         @include offset-highlighter();
     }
 
@@ -241,23 +243,27 @@ a {
 
 $break-points: ( 
     'lg': 992px,
-    'md': 768px, 
+    'md2': 840px,
+    'md1': 730px, 
     'sm3': 630px,
     'sm2': 576px,
     'sm1': 500px,
-    'xl': 1200px, 
+    'xl': 1075px, 
     'xs2': 450px,
     'xs1': 360px 
 );
 
 /* Responsive design */
 
-//Large mobiles
-@mixin adjust-info ($size) {
-    .game-info {
-        max-width: $size;
+@mixin adjust-game-info ($size) {
+    .game {
+        .game-info {
+            max-width: $size;
+        }
     }
 }
+
+//mobiles
 
 @media (min-width: map-get($map: $break-points, $key: 'xs1')) {
     .game {
@@ -271,9 +277,9 @@ $break-points: (
         .game-img {
             max-width: 8rem;
         }
-
-        @include adjust-info(55%);
     }
+
+    @include adjust-game-info(55%);
 }
 
 @media (min-width: map-get($map: $break-points, $key: 'xs2')) {
@@ -287,28 +293,75 @@ $break-points: (
 
 //Tablets
 @media (min-width: map-get($map: $break-points, $key: 'sm1')) {
-    .game {
-        .game-info {
-            max-width: 60%;
+    @include adjust-game-info(60%);
+
+    .tablet-styled-group {
+        display: flex;
+        justify-content: space-between;
+
+        div {
+            margin-right: 2rem;
+        }
+
+        .filter-select {
+            margin-right: 0;
+        }
+
+        .min-score {
+            flex-grow: 1;
+        }      
+
+        .order-by {
+            flex-grow: 3;
+        }
+
+        button.clear {
+            min-width: fit-content;
+            height: fit-content;
+            margin-top: 1.4rem;
         }
     }
 }
 
 @media (min-width: map-get($map: $break-points, $key: 'sm2')) {
-    .game {
-        .game-info {
-            max-width: 65%;
-        }
-    }
+    @include adjust-game-info(65%);
 }
 
 @media (min-width: map-get($map: $break-points, $key: 'sm3')) {
-    .game {
-        .game-info {
-            max-width: 70%;
+    @include adjust-game-info(70%);
+}
+
+@media (min-width: map-get($map: $break-points, $key: 'md1')) {
+    @include adjust-game-info(72%);
+}
+
+@media (min-width: map-get($map: $break-points, $key: 'md2')) {
+    @include adjust-game-info(77%);
+}
+
+//large screens
+
+@media (min-width: map-get($map: $break-points, $key: 'lg')) {
+    @include adjust-game-info(80%);
+    a {
+        &.nav-link {
+            padding: $panel-padding/2 !important;
+            padding-right: $panel-padding * 3 !important;
+        }
+
+        h2.highlighter {
+            display: block;
+            opacity: 0;
+        }
+
+        &.active {
+            h2.highlighter {
+                opacity: $highlighter-opacity; 
+            }
         }
     }
 }
 
-
-
+@media (min-width: map-get($map: $break-points, $key: 'xl')) {
+    @include adjust-game-info(82%);
+}
