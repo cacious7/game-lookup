@@ -11290,7 +11290,30 @@ a h2 {
 
 @media (min-width: 992px) {
   .game .game-info {
-    max-width: 80%;
+    max-width: 67%;
+  }
+
+  body {
+    max-width: 90vw;
+    margin: auto;
+  }
+
+  .navigation {
+    padding-top: 1.5rem;
+  }
+
+  .game-lookup-container {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+  }
+
+  .game-lookup-container .filter {
+    width: 30%;
+  }
+
+  .game-lookup-container .game-list {
+    max-width: 67.5%;
   }
 
   a.nav-link {
@@ -11301,16 +11324,38 @@ a h2 {
   a h2.highlighter {
     display: block;
     opacity: 0;
+    font-size: 2.7rem;
   }
 
   a.active h2.highlighter {
     opacity: 0.06;
   }
+
+  .tablet-styled-group {
+    flex-direction: column;
+  }
+
+  .tablet-styled-group div {
+    margin-right: 0;
+  }
+
+  .tablet-styled-group button {
+    min-width: -webkit-fit-content;
+    min-width: -moz-fit-content;
+    min-width: fit-content;
+    align-self: flex-end;
+  }
 }
 
 @media (min-width: 1075px) {
   .game .game-info {
-    max-width: 82%;
+    max-width: 70%;
+  }
+}
+
+@media (min-width: 1280px) {
+  .game .game-info {
+    max-width: 75%;
   }
 }
 
