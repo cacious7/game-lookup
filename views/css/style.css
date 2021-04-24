@@ -11118,6 +11118,10 @@ button {
   border: transparent;
 }
 
+.notification {
+  padding: 1rem;
+}
+
 /*Game Preview design*/
 
 .game {

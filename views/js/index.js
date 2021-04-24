@@ -61773,15 +61773,32 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var react__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! react */ "./node_modules/react/index.js");
 /* harmony import */ var react__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(react__WEBPACK_IMPORTED_MODULE_0__);
 /* harmony import */ var react_bootstrap__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! react-bootstrap */ "./node_modules/react-bootstrap/esm/index.js");
+function _slicedToArray(arr, i) { return _arrayWithHoles(arr) || _iterableToArrayLimit(arr, i) || _unsupportedIterableToArray(arr, i) || _nonIterableRest(); }
+
+function _nonIterableRest() { throw new TypeError("Invalid attempt to destructure non-iterable instance.\nIn order to be iterable, non-array objects must have a [Symbol.iterator]() method."); }
+
+function _unsupportedIterableToArray(o, minLen) { if (!o) return; if (typeof o === "string") return _arrayLikeToArray(o, minLen); var n = Object.prototype.toString.call(o).slice(8, -1); if (n === "Object" && o.constructor) n = o.constructor.name; if (n === "Map" || n === "Set") return Array.from(o); if (n === "Arguments" || /^(?:Ui|I)nt(?:8|16|32)(?:Clamped)?Array$/.test(n)) return _arrayLikeToArray(o, minLen); }
+
+function _arrayLikeToArray(arr, len) { if (len == null || len > arr.length) len = arr.length; for (var i = 0, arr2 = new Array(len); i < len; i++) { arr2[i] = arr[i]; } return arr2; }
+
+function _iterableToArrayLimit(arr, i) { if (typeof Symbol === "undefined" || !(Symbol.iterator in Object(arr))) return; var _arr = []; var _n = true; var _d = false; var _e = undefined; try { for (var _i = arr[Symbol.iterator](), _s; !(_n = (_s = _i.next()).done); _n = true) { _arr.push(_s.value); if (i && _arr.length === i) break; } } catch (err) { _d = true; _e = err; } finally { try { if (!_n && _i["return"] != null) _i["return"](); } finally { if (_d) throw _e; } } return _arr; }
+
+function _arrayWithHoles(arr) { if (Array.isArray(arr)) return arr; }
 
 
 
-var Game = function Game() {
+
+var Game = function Game(props) {
+  var _useState = Object(react__WEBPACK_IMPORTED_MODULE_0__["useState"])(new Date(props.data.first_release_date)),
+      _useState2 = _slicedToArray(_useState, 2),
+      releaseDate = _useState2[0],
+      setReleaseDate = _useState2[1];
+
   return /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(react_bootstrap__WEBPACK_IMPORTED_MODULE_1__["Card"], {
     className: "panel col-sm-12 game"
   }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("p", {
     className: "rating"
-  }, "9"), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", {
+  }, +props.data.rating.toFixed()), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", {
     className: "game-img"
   }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("img", {
     src: "stores/markusshoes/images/adidas alphabounce-1.jpg",
@@ -61790,11 +61807,11 @@ var Game = function Game() {
     className: "game-info"
   }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("h2", {
     className: "Title"
-  }, "Game-Title"), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("p", {
+  }, props.data.name), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("p", {
     className: "date"
-  }, "Release Date: ", /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("span", null, "DD/MM/YYYY")), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("p", {
+  }, "Release Date: ", /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("span", null, "".concat(releaseDate.getDate(), "/").concat(releaseDate.getMonth(), "/").concat(releaseDate.getFullYear()))), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("p", {
     className: "summary"
-  }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("span", null, "[Summary]"), "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.")));
+  }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("span", null, "[Summary]"), " ", props.data.summary)));
 };
 
 /* harmony default export */ __webpack_exports__["default"] = (Game);
@@ -61841,6 +61858,33 @@ var Navigation = function Navigation() {
 
 /***/ }),
 
+/***/ "./resources/js/components/Notification.jsx":
+/*!**************************************************!*\
+  !*** ./resources/js/components/Notification.jsx ***!
+  \**************************************************/
+/*! exports provided: default */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony import */ var react__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! react */ "./node_modules/react/index.js");
+/* harmony import */ var react__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(react__WEBPACK_IMPORTED_MODULE_0__);
+/* harmony import */ var react_bootstrap__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! react-bootstrap */ "./node_modules/react-bootstrap/esm/index.js");
+
+
+
+var Notification = function Notification(props) {
+  return /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(react_bootstrap__WEBPACK_IMPORTED_MODULE_1__["Card"], {
+    bg: props.variant.toLowerCase(),
+    text: props.variant.toLowerCase() === 'light' ? 'dark' : 'white',
+    className: "notification"
+  }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(react_bootstrap__WEBPACK_IMPORTED_MODULE_1__["Card"].Body, null, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(react_bootstrap__WEBPACK_IMPORTED_MODULE_1__["Card"].Title, null, props.type.toUpperCase()), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(react_bootstrap__WEBPACK_IMPORTED_MODULE_1__["Card"].Text, null, props.content)));
+};
+
+/* harmony default export */ __webpack_exports__["default"] = (Notification);
+
+/***/ }),
+
 /***/ "./resources/js/components/pages/Contact.jsx":
 /*!***************************************************!*\
   !*** ./resources/js/components/pages/Contact.jsx ***!
@@ -61882,8 +61926,9 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _Filter__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ../Filter */ "./resources/js/components/Filter.jsx");
 /* harmony import */ var react_bootstrap__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! react-bootstrap */ "./node_modules/react-bootstrap/esm/index.js");
 /* harmony import */ var _Game__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! ../Game */ "./resources/js/components/Game.jsx");
-/* harmony import */ var axios__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! axios */ "./node_modules/axios/index.js");
-/* harmony import */ var axios__WEBPACK_IMPORTED_MODULE_5___default = /*#__PURE__*/__webpack_require__.n(axios__WEBPACK_IMPORTED_MODULE_5__);
+/* harmony import */ var _Notification__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! ../Notification */ "./resources/js/components/Notification.jsx");
+/* harmony import */ var axios__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(/*! axios */ "./node_modules/axios/index.js");
+/* harmony import */ var axios__WEBPACK_IMPORTED_MODULE_6___default = /*#__PURE__*/__webpack_require__.n(axios__WEBPACK_IMPORTED_MODULE_6__);
 function _slicedToArray(arr, i) { return _arrayWithHoles(arr) || _iterableToArrayLimit(arr, i) || _unsupportedIterableToArray(arr, i) || _nonIterableRest(); }
 
 function _nonIterableRest() { throw new TypeError("Invalid attempt to destructure non-iterable instance.\nIn order to be iterable, non-array objects must have a [Symbol.iterator]() method."); }
@@ -61903,6 +61948,7 @@ function _arrayWithHoles(arr) { if (Array.isArray(arr)) return arr; }
 
 
 
+
 var Home = function Home() {
   var _useQuery = Object(react_query__WEBPACK_IMPORTED_MODULE_1__["useQuery"])('games-doc', function () {
     return getGamesDoc();
@@ -61912,15 +61958,20 @@ var Home = function Home() {
       isFetching = _useQuery.isFetching,
       error = _useQuery.error;
 
-  var _useState = Object(react__WEBPACK_IMPORTED_MODULE_0__["useState"])(null),
+  var _useState = Object(react__WEBPACK_IMPORTED_MODULE_0__["useState"])(false),
       _useState2 = _slicedToArray(_useState, 2),
-      gamesDoc = _useState2[0],
-      setGamesDoc = _useState2[1];
+      isError = _useState2[0],
+      setIsError = _useState2[1];
 
-  var _useState3 = Object(react__WEBPACK_IMPORTED_MODULE_0__["useState"])("There was an error fetching the games data, \n        please check your internet connection and try again!"),
+  var _useState3 = Object(react__WEBPACK_IMPORTED_MODULE_0__["useState"])(null),
       _useState4 = _slicedToArray(_useState3, 2),
-      errorMessage = _useState4[0],
-      setErrorMessage = _useState4[1];
+      gamesDoc = _useState4[0],
+      setGamesDoc = _useState4[1];
+
+  var _useState5 = Object(react__WEBPACK_IMPORTED_MODULE_0__["useState"])("There was an error fetching the games data, \n        please check your internet connection and try again!"),
+      _useState6 = _slicedToArray(_useState5, 2),
+      errorMessage = _useState6[0],
+      setErrorMessage = _useState6[1];
   /**
    * Fetch the games document from the server
    * @return {Void}
@@ -61928,20 +61979,62 @@ var Home = function Home() {
 
 
   var getGamesDoc = function getGamesDoc() {
-    axios__WEBPACK_IMPORTED_MODULE_5___default()('https://public.connectnow.org.uk/applicant-test/').then(function (res) {
-      var data = JSON.stringify(res.data);
+    axios__WEBPACK_IMPORTED_MODULE_6___default()('https://public.connectnow.org.uk/applicant-test/').then(function (res) {
+      console.log(res.data);
+      var data = res.data;
       setGamesDoc(data);
+    })["catch"](function (err) {
+      setIsError(true);
+      setErrorMessage(err.message);
     });
   };
   /**
    * Displays the game preview cards based on
    * the result from fetching of the game data/doc
-   * @returns {Void}
+   * @returns {Object}
    */
 
 
   var displayGames = function displayGames() {
-    return isFetching ? 'Loading...' : error ? errorMessage : /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(_Game__WEBPACK_IMPORTED_MODULE_4__["default"], null); //return (<Game/>);
+    console.log('error => ', error, 'isFetching => ', isFetching, 'doc => ', gamesDoc);
+    var result = null;
+
+    if (error || isError) {
+      result = /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(_Notification__WEBPACK_IMPORTED_MODULE_5__["default"], {
+        type: "notice",
+        content: errorMessage,
+        variant: "danger"
+      });
+    } else if (isFetching || status == 'loading') {
+      result = /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(_Notification__WEBPACK_IMPORTED_MODULE_5__["default"], {
+        type: "notice",
+        content: "loading...",
+        variant: "primary"
+      });
+    } else if (gamesDoc) {
+      console.log('games doc => ', gamesDoc);
+      var gameList = gamesDoc.map(function (game) {
+        return /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(_Game__WEBPACK_IMPORTED_MODULE_4__["default"], {
+          data: game,
+          key: game.id
+        });
+      });
+      result = gameList;
+    } else if (!isFetching) {
+      result = /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(_Notification__WEBPACK_IMPORTED_MODULE_5__["default"], {
+        type: "notice",
+        content: "One Moment Please...",
+        variant: "info"
+      });
+    } else {
+      result = /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(_Notification__WEBPACK_IMPORTED_MODULE_5__["default"], {
+        type: "notice",
+        content: "OOps! Couldn't fetch the games...",
+        variant: "danger"
+      });
+    }
+
+    return result;
   };
 
   return /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(react_bootstrap__WEBPACK_IMPORTED_MODULE_3__["Container"], {
