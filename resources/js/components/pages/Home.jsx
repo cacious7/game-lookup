@@ -3,6 +3,7 @@ import {useQuery} from 'react-query';
 import Filter from '../Filter';
 import {Container} from 'react-bootstrap';
 import Game from '../Game';
+import axios from 'axios';
 
 const Home = () => {
     const { status, data, isFetching, error  } = useQuery( 'games-doc', () => getGamesDoc() );
@@ -16,10 +17,12 @@ const Home = () => {
      * Fetch the games document from the server
      * @return {Void}
      */
-    const getGamesDoc = async () => {
-        const doc = await fetch('https://public.connectnow.org.uk/applicant-test/');
-        setGamesDoc(doc);
-        console.log(gamesDoc);
+    const getGamesDoc = () => {
+        axios('https://public.connectnow.org.uk/applicant-test/')
+        .then( res => {
+            const data = JSON.stringify(res.data);
+            setGamesDoc(data);
+        })
     }
 
     /**
@@ -28,8 +31,8 @@ const Home = () => {
      * @returns {Void}
      */
     const displayGames = () => {
-        // return isFetching ? 'Loading...' : error ? errorMessage : (<Game/>);
-        return (<Game/>);
+        return isFetching ? 'Loading...' : error ? errorMessage : (<Game/>);
+        //return (<Game/>);
     }
 
     return ( 
